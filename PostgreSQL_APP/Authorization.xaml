@@ -1,0 +1,21 @@
+﻿<Window x:Class="PostgreSQL_APP.Authorization"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PostgreSQL_APP"
+        mc:Ignorable="d"
+        Title="Authorization" Height="222" Width="309" WindowStartupLocation="CenterScreen">
+    <Grid Margin="0,0,2,0" Background="#FFD8D4D4">
+        <Button x:Name="sign_in_button" Content="Войти  в систему" HorizontalAlignment="Left" Margin="133,141,0,0" VerticalAlignment="Top" Width="149" Height="33" Click="button_Click"/>
+        <TextBox x:Name="name_box" HorizontalAlignment="Left" Height="21" Margin="133,74,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="149" Text="postgres"/>
+        <TextBox x:Name="port_box" HorizontalAlignment="Left" Height="22" Margin="133,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="149" Text="5433"/>
+        <TextBox x:Name="server_box" HorizontalAlignment="Left" Height="22" Margin="133,11,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="149" Text="localhost"/>
+        <Label x:Name="label" Content="Пароль:" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" Width="66"/>
+        <Label x:Name="label_Copy" Content="Имя пользователя:" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top" Width="116"/>
+        <Label x:Name="label_Copy1" Content="Порт:" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" Width="66"/>
+        <Label x:Name="label_Copy2" Content="Сервер:" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top" Width="93"/>
+        <PasswordBox x:Name="pass_box" HorizontalAlignment="Left" Height="20" Margin="133,106,0,0" VerticalAlignment="Top" Width="149" Password="12345"/>
+
+    </Grid>
+</Window>

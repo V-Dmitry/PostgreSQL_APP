@@ -80,7 +80,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Add_authors.xaml">
+    <Page Include="AddAuthors.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -99,8 +99,8 @@
     <Compile Include="Add.xaml.cs">
       <DependentUpon>Add.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Add_authors.xaml.cs">
-      <DependentUpon>Add_authors.xaml</DependentUpon>
+    <Compile Include="AddAuthors.xaml.cs">
+      <DependentUpon>AddAuthors.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -109,7 +109,7 @@
     <Compile Include="Authorization.xaml.cs">
       <DependentUpon>Authorization.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Auto_generation.cs" />
+    <Compile Include="AutoGeneration.cs" />
     <Compile Include="Edit.xaml.cs">
       <DependentUpon>Edit.xaml</DependentUpon>
     </Compile>
@@ -119,6 +119,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PgSQL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

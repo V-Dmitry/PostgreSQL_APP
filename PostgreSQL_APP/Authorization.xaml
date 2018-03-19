@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PostgreSQL_APP"
         mc:Ignorable="d"
-        Title="Authorization" Height="222" Width="309" WindowStartupLocation="CenterScreen">
+        Title="Аутентификация" Height="222" Width="309" WindowStartupLocation="CenterScreen">
     <Grid Margin="0,0,2,0" Background="#FFD8D4D4">
         <Button x:Name="sign_in_button" Content="Войти  в систему" HorizontalAlignment="Left" Margin="133,141,0,0" VerticalAlignment="Top" Width="149" Height="33" Click="button_Click"/>
         <TextBox x:Name="name_box" HorizontalAlignment="Left" Height="21" Margin="133,74,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="149" Text="postgres"/>

@@ -7,7 +7,7 @@ using Npgsql;
 
 namespace PostgreSQL_APP
 {
-    class Auto_generation
+    class AutoGeneration
     {
         string conn_param = null;
 
@@ -16,8 +16,8 @@ namespace PostgreSQL_APP
         string[] secondnames = {"Александрович", "Дмитриевич", "Сергеевич", "Андреевич", "Иванович", "Рустамович", "Владимирович", "Афанасьевич", "Олегович", "Павлович", "Юрьевич", "Алексеевич", "Эдуардович", "Петрович", "Михайлович", "Евгеньевич", "Степанович", "Иоанович" };
         string[] cities = {"Ижевск", "Москва", "Пермь", "Екатеринбург", "Саратов", "Глазов", "Санкт-Петербург", "Иваново", "Березники", "Нижний Новгород", "Петропавловск", "Владимир", "Киев", "Киров", "Астрахань", "Норильск", "Когалым", "Братск", "Волгоград", "Калуга", "Коломна", "Красноярск", "Нижний тагил" };
 
-        private Auto_generation() { }
-        public Auto_generation(string conn_param)
+        private AutoGeneration() { }
+        public AutoGeneration(string conn_param)
         {
             this.conn_param = conn_param;
         }

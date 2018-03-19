@@ -15,7 +15,7 @@
         <TextBox x:Name="textBox2" HorizontalAlignment="Left" Height="23" Margin="144,44,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
         <TextBox x:Name="textBox3" HorizontalAlignment="Left" Height="23" Margin="144,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
         <TextBox x:Name="textBox4" HorizontalAlignment="Left" Height="23" Margin="144,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="172"/>
-        <Button x:Name="add_but" Content="Добавить" HorizontalAlignment="Left" Margin="145,128,0,0" VerticalAlignment="Top" Width="172" Height="33" Click="add_but_Click"/>
+        <Button x:Name="addBut" Content="Добавить" HorizontalAlignment="Left" Margin="145,128,0,0" VerticalAlignment="Top" Width="172" Height="33" Click="addBut_Click"/>
         <ComboBox x:Name="comboBox1" HorizontalAlignment="Left" Margin="145,14,0,0" VerticalAlignment="Top" Width="170"/>
         <ComboBox x:Name="comboBox2" HorizontalAlignment="Left" Margin="145,44,0,0" VerticalAlignment="Top" Width="170"/>
         <ComboBox x:Name="comboBox3" HorizontalAlignment="Left" Margin="145,73,0,0" VerticalAlignment="Top" Width="170"/>

@@ -11,7 +11,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Npgsql;
 
 namespace PostgreSQL_APP
 {
@@ -24,7 +23,7 @@ namespace PostgreSQL_APP
         public string port = null;
         public string name = null;
         public string password = null;
-        public string conn_param = null;
+        public string connParam = null;
         public Authorization()
         {
             InitializeComponent();
@@ -34,16 +33,8 @@ namespace PostgreSQL_APP
         {
             try
             {
-                NpgsqlConnection conn = new NpgsqlConnection(conn_param);
-                conn.Open(); 
-                conn.Close(); 
                 MainWindow win = new MainWindow();
-                win.server = this.server;
-                win.port = this.port;
-                win.name = this.name;
-                win.password = this.password;
-                win.conn_param = this.conn_param;
-                win.def();
+                win.Init(connParam);
                 win.Show();
                 this.Close();
             }
@@ -59,7 +50,7 @@ namespace PostgreSQL_APP
             port = port_box.Text;
             name = name_box.Text;
             password = pass_box.Password;
-            conn_param = "Server=" + server + ";Port=" + port + ";Database=Library;User Id=" + name + ";Password=" + password + ";";
+            connParam = "Server=" + server + ";Port=" + port + ";Database=Library;User Id=" + name + ";Password=" + password + ";";
             ConnectToDb();
         }
     }

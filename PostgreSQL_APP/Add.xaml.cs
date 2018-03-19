@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Data;
-using Npgsql;
 
 namespace PostgreSQL_APP
 {
@@ -46,6 +45,7 @@ namespace PostgreSQL_APP
                 comboBox1.Visibility = Visibility.Collapsed;
                 textBox2.Visibility = Visibility.Collapsed;
                 comboBox3.Visibility = Visibility.Collapsed;
+                this.Title = "Добавление книги";
             }
             else if(flag == "author")
             {
@@ -56,6 +56,7 @@ namespace PostgreSQL_APP
                 comboBox1.Visibility = Visibility.Collapsed;
                 comboBox2.Visibility = Visibility.Collapsed;
                 comboBox3.Visibility = Visibility.Collapsed;
+                this.Title = "Добавление автора";
             }
             else if (flag == "shelf")
             {
@@ -68,6 +69,7 @@ namespace PostgreSQL_APP
                 comboBox1.Visibility = Visibility.Collapsed;
                 comboBox2.Visibility = Visibility.Collapsed;
                 comboBox3.Visibility = Visibility.Collapsed;
+                this.Title = "Добавление полки";
             }
             else if (flag == "location")
             {
@@ -75,6 +77,7 @@ namespace PostgreSQL_APP
                 label1.Content = "Название книги:";
                 label2.Content = "Полка:";
                 label3.Content = "Кол-во книг:";
+                this.Title = "Добавление расположения";
             }
             else if (flag == "pub")
             {
@@ -87,6 +90,7 @@ namespace PostgreSQL_APP
                 comboBox1.Visibility = Visibility.Collapsed;
                 comboBox2.Visibility = Visibility.Collapsed;
                 comboBox3.Visibility = Visibility.Collapsed;
+                this.Title = "Добавление издательства";
             }
         }
 
@@ -95,28 +99,28 @@ namespace PostgreSQL_APP
             string str = null;
             if (flag == "book")
             {
-                str = "select public.insert_book(\'" + textBox1.Text + "\', \'" + comboBox2.Text + "\', \'" + textBox3.Text + "\', \'" + textBox4.Text + "\')";
+                str = "public.insert_book(\'" + textBox1.Text + "\', \'" + comboBox2.Text + "\', \'" + textBox3.Text + "\', \'" + textBox4.Text + "\')";
             }
             if (flag == "author")
             {
-                str = "select public.insert_author(\'" + textBox1.Text + "\', \'" + textBox2.Text + "\', \'" + textBox3.Text + "\', \'" + textBox4.Text + "\')";
+                str = "public.insert_author(\'" + textBox1.Text + "\', \'" + textBox2.Text + "\', \'" + textBox3.Text + "\', \'" + textBox4.Text + "\')";
             }
             if (flag == "shelf")
             {
-                str = "select public.insert_shelf(\'" + textBox1.Text + "\', \'" + textBox2.Text + "\')";
+                str = "public.insert_shelf(\'" + textBox1.Text + "\', \'" + textBox2.Text + "\')";
             }
             if (flag == "location")
             {
-                str = "select public.insert_loc(" + id1 + ", " + id2 + ", " + id3 + ", " + textBox4.Text + ")";
+                str = "public.insert_loc(" + id1 + ", " + id2 + ", " + id3 + ", " + textBox4.Text + ")";
             }
             if (flag == "pub")
             {
-                str = "select public.insert_pub(\'" + textBox1.Text + "\', \'" + textBox2.Text + "\')";
+                str = "public.insert_pub(\'" + textBox1.Text + "\', \'" + textBox2.Text + "\')";
             }
             return str;
         }
 
-        private void add_but_Click(object sender, RoutedEventArgs e)
+        private void addBut_Click(object sender, RoutedEventArgs e)
         {
             ok = true;
             Close();

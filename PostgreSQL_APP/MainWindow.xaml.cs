@@ -14,7 +14,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Npgsql;
 
 namespace PostgreSQL_APP
 {
@@ -24,17 +23,15 @@ namespace PostgreSQL_APP
     public partial class MainWindow : Window
     {
         #region Variables
-        public string server = null;
-        public string port = null;
-        public string name = null;
-        public string password = null;
-        public string conn_param = null;
+        PgSQL pgsql = null;
 
-        DataTable book_dt = null;
-        DataTable author_dt = null;
-        DataTable shelf_dt = null;
-        DataTable location_dt = null;
-        DataTable pub_dt = null;
+        DataTable bookDt = null;
+        DataTable authorDt = null;
+        DataTable shelfDt = null;
+        DataTable locationDt = null;
+        DataTable pubDt = null;
+
+        string connParam = null;
         #endregion
 
         #region Initialaze
@@ -42,47 +39,29 @@ namespace PostgreSQL_APP
         {
             InitializeComponent();
         }
-        public void def()
-        {
-            Out_table(ref book_dt, "select * from out_book()");
-            Out_table(ref author_dt, "select * from out_author()");
-            Out_table(ref shelf_dt, "select * from out_shelf()");
-            Out_table(ref location_dt, "select * from out_loc()");
-            Out_table(ref pub_dt, "select * from out_pub()");
-        }
-        #endregion
 
-        #region Query
-        private void Out_table(ref DataTable dt, string query)
+        public void Init(string connParam)
         {
-            NpgsqlConnection dbConnection = new NpgsqlConnection(conn_param);
-            dbConnection.Open();
-            NpgsqlCommand command = new NpgsqlCommand(query, dbConnection);
-            NpgsqlDataAdapter dbDataAdapter = new NpgsqlDataAdapter(command);
-            DataSet ds = new DataSet();
-            dbDataAdapter.Fill(ds);
-            dt = ds.Tables[0];
-            dbConnection.Close();
-    }
-
-    public void Query(string query)
-        { 
-            NpgsqlConnection con = new NpgsqlConnection(conn_param);
-            NpgsqlCommand com = new NpgsqlCommand(query, con);
-            con.Open();
-            com.ExecuteReader();
-            con.Close();
+            pgsql = new PgSQL(connParam);
+            pgsql.Connect();
+            bookDt = pgsql.OutTable("out_book()");
+            authorDt = pgsql.OutTable("out_author()");
+            shelfDt = pgsql.OutTable("out_shelf()");
+            locationDt = pgsql.OutTable("out_loc()");
+            pubDt = pgsql.OutTable("out_pub()");
+            this.connParam = connParam;
         }
+
         #endregion
 
         #region Show_table
-        private void table_out_but_Click(object sender, RoutedEventArgs e)
+        private void tableOutBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Out_table(ref book_dt, "select * from out_book()");
-                Book_table.ItemsSource = book_dt.DefaultView;
-                Book_table.Columns[0].Visibility = Visibility.Collapsed;
+                bookDt = pgsql.OutTable("out_book()");
+                BookTable.ItemsSource = bookDt.DefaultView;
+                BookTable.Columns[0].Visibility = Visibility.Collapsed;
             }
             catch(Exception p)
             {
@@ -90,13 +69,13 @@ namespace PostgreSQL_APP
             }
         }
 
-        private void author_out_but_Click(object sender, RoutedEventArgs e)
+        private void authorOutBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Out_table(ref author_dt, "select * from out_author()");
-                Author_table.ItemsSource = author_dt.DefaultView;
-                Author_table.Columns[0].Visibility = Visibility.Collapsed;
+                authorDt = pgsql.OutTable("out_author()");
+                AuthorTable.ItemsSource = authorDt.DefaultView;
+                AuthorTable.Columns[0].Visibility = Visibility.Collapsed;
             }
             catch (Exception p)
             {
@@ -104,13 +83,13 @@ namespace PostgreSQL_APP
             }
         }
 
-        private void shelf_out_but_Click(object sender, RoutedEventArgs e)
+        private void shelfOutBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Out_table( ref shelf_dt, "select * from out_shelf()");
-                Shelf_table.ItemsSource = shelf_dt.DefaultView;
-                Shelf_table.Columns[0].Visibility = Visibility.Collapsed;
+                shelfDt = pgsql.OutTable("out_shelf()");
+                ShelfTable.ItemsSource = shelfDt.DefaultView;
+                ShelfTable.Columns[0].Visibility = Visibility.Collapsed;
             }
             catch (Exception p)
             {
@@ -118,13 +97,13 @@ namespace PostgreSQL_APP
             }
         }
         
-        private void loc_out_but_Click(object sender, RoutedEventArgs e)
+        private void locOutBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Out_table(ref location_dt, "select * from out_loc()");
-                Location_table.ItemsSource = location_dt.DefaultView;
-                Location_table.Columns[0].Visibility = Visibility.Collapsed;
+                locationDt = pgsql.OutTable("out_loc()");
+                LocationTable.ItemsSource = locationDt.DefaultView;
+                LocationTable.Columns[0].Visibility = Visibility.Collapsed;
             }
             catch (Exception p)
             {
@@ -132,13 +111,13 @@ namespace PostgreSQL_APP
             }
         }
 
-        private void out_pub_but_Click(object sender, RoutedEventArgs e)
+        private void outPubBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Out_table(ref pub_dt, "select * from out_pub()");
-                Pub_table.ItemsSource = pub_dt.DefaultView;
-                Pub_table.Columns[0].Visibility = Visibility.Collapsed;
+                pubDt = pgsql.OutTable("out_pub()");
+                PubTable.ItemsSource = pubDt.DefaultView;
+                PubTable.Columns[0].Visibility = Visibility.Collapsed;
             }
             catch (Exception p)
             {
@@ -149,11 +128,11 @@ namespace PostgreSQL_APP
         #endregion
 
         #region Book
-        private void add_book_but_Click(object sender, RoutedEventArgs e)
+        private void addBookBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Add("book");
+                AddBook();
             }
             catch (Exception p)
             {
@@ -161,11 +140,11 @@ namespace PostgreSQL_APP
             }
         }
 
-        private void edit_book_but_Click(object sender, RoutedEventArgs e)
+        private void editBookBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Edit_book();
+                EditBook();
             }
             catch(Exception p)
             {
@@ -173,11 +152,11 @@ namespace PostgreSQL_APP
             }
         }
 
-        private void del_book_but_Click(object sender, RoutedEventArgs e)
+        private void delBookBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Del_book();
+                DelBook();
             }
             catch (Exception p)
             {
@@ -187,11 +166,11 @@ namespace PostgreSQL_APP
         #endregion
 
         #region Author
-        private void add_author_but_Click(object sender, RoutedEventArgs e)
+        private void addAuthorBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Add_author();
+                AddAuthor();
             }
             catch (Exception p)
             {
@@ -199,11 +178,11 @@ namespace PostgreSQL_APP
             }
         }
 
-        private void edit_author_but_Click(object sender, RoutedEventArgs e)
+        private void editAuthorBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Edit_author();
+                EditAuthor();
             }
             catch (Exception p)
             {
@@ -211,11 +190,11 @@ namespace PostgreSQL_APP
             }
         }
 
-        private void del_author_but_Click(object sender, RoutedEventArgs e)
+        private void delAuthorBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Del_author();
+                DelAuthor();
             }
             catch (Exception p)
             {
@@ -225,11 +204,11 @@ namespace PostgreSQL_APP
         #endregion
 
         #region Bookshelf
-        private void add_shelf_but_Click(object sender, RoutedEventArgs e)
+        private void addShelfBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Add_shelf(); 
+                AddShelf(); 
             }
             catch (Exception p)
             {
@@ -237,11 +216,11 @@ namespace PostgreSQL_APP
             }
         }
 
-        private void edit_shelf_but_Click(object sender, RoutedEventArgs e)
+        private void editShelfBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Edit_shelf();
+                EditShelf();
             }
             catch (Exception p)
             {
@@ -249,11 +228,11 @@ namespace PostgreSQL_APP
             }
         }
 
-        private void del_shelf_but_Click(object sender, RoutedEventArgs e)
+        private void delShelfBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Del_shelf();
+                DelShelf();
             }
             catch (Exception p)
             {
@@ -263,11 +242,11 @@ namespace PostgreSQL_APP
         #endregion
 
         #region Location 
-        private void add_loc_but_Click(object sender, RoutedEventArgs e)
+        private void addLocBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Add_loc();
+                AddLoc();
             }
             catch (Exception p)
             {
@@ -275,11 +254,11 @@ namespace PostgreSQL_APP
             }
         }
 
-        private void edit_loc_but_Click(object sender, RoutedEventArgs e)
+        private void editLocBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Edit_loc();
+                EditLoc();
             }
             catch (Exception p)
             {
@@ -287,11 +266,11 @@ namespace PostgreSQL_APP
             }
         }
 
-        private void del_loc_but_Click(object sender, RoutedEventArgs e)
+        private void delLocBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Del_loc();
+                DelLoc();
             }
             catch (Exception p)
             {
@@ -301,11 +280,11 @@ namespace PostgreSQL_APP
         #endregion
 
         #region Publishing
-        private void add_pub_but_Click(object sender, RoutedEventArgs e)
+        private void addPubBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Add_pub();
+                AddPub();
             }
             catch (Exception p)
             {
@@ -313,11 +292,11 @@ namespace PostgreSQL_APP
             }
         }
 
-        private void edit_pub_but_Click(object sender, RoutedEventArgs e)
+        private void editPubBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Edit_pub();
+                EditPub();
             }
             catch (Exception p)
             {
@@ -325,11 +304,11 @@ namespace PostgreSQL_APP
             }
         }
 
-        private void del_pub_but_Click(object sender, RoutedEventArgs e)
+        private void delPubBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Del_pub();
+                DelPub();
             }
             catch (Exception p)
             {
@@ -338,27 +317,27 @@ namespace PostgreSQL_APP
         }
         #endregion
 
-        #region Add_functions
-        public void Add_book()
+        #region AddFunctions
+        public void AddBook()
         {
             Add("book");
         }
 
-        public void Add_author()
+        public void AddAuthor()
         {
             Add("author");
         }
 
-        public void Add_shelf()
+        public void AddShelf()
         {
             Add("shelf");
         }
 
-        public void Add_loc()
+        public void AddLoc()
         {
             Add("location");
         }
-        public void Add_pub()
+        public void AddPub()
         {
             Add("pub");
         }
@@ -376,27 +355,24 @@ namespace PostgreSQL_APP
             else if (table == "location")
             {
                 win = new PostgreSQL_APP.Add(table);
-                Out_table(ref author_dt, "select * from get_author()");
-                win.comboBox1.ItemsSource = author_dt.DefaultView;
+                authorDt = pgsql.OutTable("get_author()");
+                win.comboBox1.ItemsSource = authorDt.DefaultView;
                 win.comboBox1.DisplayMemberPath = "name";
                 win.comboBox1.SelectedValuePath = "id";
-                Out_table(ref book_dt, "select * from get_book()");
-                win.comboBox2.ItemsSource = book_dt.DefaultView;
+                bookDt = pgsql.OutTable("get_book()");
+                win.comboBox2.ItemsSource = bookDt.DefaultView;
                 win.comboBox2.DisplayMemberPath = "name";
                 win.comboBox2.SelectedValuePath = "id";
-                Out_table(ref shelf_dt, "select * from get_shelf()");
-                win.comboBox3.ItemsSource = shelf_dt.DefaultView;
+                shelfDt = pgsql.OutTable("get_shelf()");
+                win.comboBox3.ItemsSource = shelfDt.DefaultView;
                 win.comboBox3.DisplayMemberPath = "name";
                 win.comboBox3.SelectedValuePath = "id";
                 win.ShowDialog();
 
                 if (win.ok)
                 {
-                    //string author = win.comboBox1.Text.ToString();
                     int id1 = (int)win.comboBox1.SelectedValue;
-                    //string book = win.comboBox2.Text.ToString();
                     int id2 = (int)win.comboBox2.SelectedValue; 
-                    //string shelf = win.comboBox3.Text.ToString();
                     int id3 = (int)win.comboBox3.SelectedValue; 
                     query = win.Query(id1, id2, id3);
                 }
@@ -404,8 +380,8 @@ namespace PostgreSQL_APP
             else if (table =="book")
             {
                 win = new PostgreSQL_APP.Add(table);
-                Out_table(ref pub_dt, "select * from get_pub()");
-                win.comboBox2.ItemsSource = pub_dt.DefaultView;
+                pubDt = pgsql.OutTable("get_pub()");
+                win.comboBox2.ItemsSource = pubDt.DefaultView;
                 win.comboBox2.DisplayMemberPath = "name";
                 win.comboBox2.SelectedValuePath = "id";
                 win.ShowDialog();
@@ -413,36 +389,36 @@ namespace PostgreSQL_APP
             }
             if (win.ok)
             {
-                Query(query);
+                pgsql.Query(query);
                 MessageBox.Show("Успешно добавлено");
             }
         }
         #endregion
 
-        #region Edit_functions
-        public void Edit_book()
+        #region EditFunctions
+        public void EditBook()
         {
-            Edit(book_dt, Book_table, "book");
+            Edit(bookDt, BookTable, "book");
         }
 
-        public void Edit_author()
+        public void EditAuthor()
         {
-            Edit(author_dt, Author_table, "author");
+            Edit(authorDt, AuthorTable, "author");
         }
 
-        public void Edit_shelf()
+        public void EditShelf()
         {
-            Edit(shelf_dt, Shelf_table, "shelf");
+            Edit(shelfDt, ShelfTable, "shelf");
         }
 
-        public void Edit_loc()
+        public void EditLoc()
         {
-            Edit(location_dt, Location_table, "location");
+            Edit(locationDt, LocationTable, "location");
         }
 
-        public void Edit_pub()
+        public void EditPub()
         {
-            Edit(pub_dt, Pub_table, "pub");
+            Edit(pubDt, PubTable, "pub");
         }
 
         private void Edit(DataTable dt, DataGrid dg, string table)
@@ -468,16 +444,16 @@ namespace PostgreSQL_APP
             }
             else if(table == "location")
             {
-                Out_table(ref author_dt, "select * from get_author()");
-                win.comboBox.ItemsSource = author_dt.DefaultView;
+                authorDt = pgsql.OutTable("get_author()");
+                win.comboBox.ItemsSource = authorDt.DefaultView;
                 win.comboBox.DisplayMemberPath = "name";
                 win.comboBox.SelectedValuePath = "id";
-                Out_table(ref book_dt, "select * from get_book()");
-                win.comboBox1.ItemsSource = book_dt.DefaultView;
+                bookDt = pgsql.OutTable("get_book()");
+                win.comboBox1.ItemsSource = bookDt.DefaultView;
                 win.comboBox1.DisplayMemberPath = "name";
                 win.comboBox1.SelectedValuePath = "id";
-                Out_table(ref shelf_dt, "select * from get_shelf()");
-                win.comboBox2.ItemsSource = shelf_dt.DefaultView;
+                shelfDt = pgsql.OutTable("get_shelf()");
+                win.comboBox2.ItemsSource = shelfDt.DefaultView;
                 win.comboBox2.DisplayMemberPath = "name";
                 win.comboBox2.SelectedValuePath = "id";
                 win.comboBox.Text = dt.Rows[num][1].ToString();
@@ -487,19 +463,16 @@ namespace PostgreSQL_APP
                 win.ShowDialog();
                 if (win.ok)
                 {
-                    //string author = win.comboBox.Text.ToString();
                     int id1 = (int)win.comboBox.SelectedValue;
-                    //string book = win.comboBox1.Text.ToString();
                     int id2 = (int)win.comboBox1.SelectedValue; ;
-                    //string shelf = win.comboBox2.Text.ToString();
                     int id3 = (int)win.comboBox2.SelectedValue; ;
                     query = win.Query(id, id2, id1, id3);
                 }
             }
             else if (table == "book")
             {
-                Out_table(ref pub_dt, "select * from get_pub()");
-                win.comboBox1.ItemsSource = pub_dt.DefaultView;
+                pubDt = pgsql.OutTable("get_pub()");
+                win.comboBox1.ItemsSource = pubDt.DefaultView;
                 win.comboBox1.DisplayMemberPath = "name";
                 win.comboBox1.SelectedValuePath = "id";
                 win.textBox.Text = (string)dt.Rows[num][1];
@@ -512,36 +485,36 @@ namespace PostgreSQL_APP
             
             if (win.ok)
             {
-                Query(query);
+                pgsql.Query(query);
                 MessageBox.Show("Успешно изменено\nОбновите таблицу");
             }
         }
         #endregion
 
-        #region Del_functions
-        public void Del_book()
+        #region DelFunctions
+        public void DelBook()
         {
-            Del(book_dt, Book_table, "book");
+            Del(bookDt, BookTable, "book");
         }
 
-        public void Del_author()
+        public void DelAuthor()
         {
-            Del(author_dt, Author_table, "author");
+            Del(authorDt, AuthorTable, "author");
         }
 
-        public void Del_shelf()
+        public void DelShelf()
         {
-            Del(shelf_dt, Shelf_table, "shelf");
+            Del(shelfDt, ShelfTable, "shelf");
         }
 
-        public void Del_loc()
+        public void DelLoc()
         {
-            Del(location_dt, Location_table, "loc");
+            Del(locationDt, LocationTable, "loc");
         }
 
-        public void Del_pub()
+        public void DelPub()
         {
-            Del(pub_dt, Pub_table, "pub");
+            Del(pubDt, PubTable, "pub");
         }
 
         private void Del(DataTable dt, DataGrid dg, string table)
@@ -551,18 +524,18 @@ namespace PostgreSQL_APP
             int id = (int)dt.Rows[num][0];
             if (MessageBox.Show("Удалить запись?", "Удаление", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                Query("select del_" + table + "(" + id + ")");
+                pgsql.Query("del_" + table + "(" + id + ")");
                 MessageBox.Show("Успешно удалено\nОбновите таблицу");
             }
         }
         #endregion
 
-        #region Context_meny_item
+        #region ContextMenyItem
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Edit_book();
+                EditBook();
             }
             catch(Exception p)
             {
@@ -574,7 +547,7 @@ namespace PostgreSQL_APP
         {
             try
             {
-                Del_book();
+                DelBook();
             }
             catch (Exception p)
             {
@@ -586,7 +559,7 @@ namespace PostgreSQL_APP
 {
             try
             { 
-                Edit_author();
+                EditAuthor();
             }
             catch(Exception p)
             {
@@ -598,7 +571,7 @@ namespace PostgreSQL_APP
         {
             try
             {
-                Del_author();
+                DelAuthor();
             }
             catch(Exception p)
             {
@@ -610,7 +583,7 @@ namespace PostgreSQL_APP
 {
             try
             {
-                Edit_shelf();
+                EditShelf();
             }
             catch (Exception p)
             {
@@ -622,7 +595,7 @@ namespace PostgreSQL_APP
 {
             try
             {
-                Del_shelf();
+                DelShelf();
             }
             catch (Exception p)
             {
@@ -634,7 +607,7 @@ namespace PostgreSQL_APP
 {
             try
             {
-                Edit_loc();
+                EditLoc();
             }
             catch (Exception p)
             {
@@ -646,7 +619,7 @@ namespace PostgreSQL_APP
 {
             try
             {
-                Del_loc();
+                DelLoc();
             }
             catch (Exception p)
             {
@@ -658,7 +631,7 @@ namespace PostgreSQL_APP
         {
             try
             {
-                Edit_pub();
+                EditPub();
             }
             catch (Exception p)
             {
@@ -670,7 +643,7 @@ namespace PostgreSQL_APP
         {
             try
             {
-                Del_pub();
+                DelPub();
             }
             catch (Exception p)
             {
@@ -680,12 +653,12 @@ namespace PostgreSQL_APP
         #endregion
 
         #region Auto
-        private void add_but_Click(object sender, RoutedEventArgs e)
+        private void addBut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Add_authors win = new Add_authors();
-                Auto_generation gen = new Auto_generation(conn_param);
+                AddAuthors win = new AddAuthors();
+                AutoGeneration gen = new AutoGeneration(connParam);
                 win.ShowDialog();
                 if (win.Ok)
                 {

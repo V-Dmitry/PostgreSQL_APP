@@ -38,6 +38,7 @@ namespace PostgreSQL_APP
                 comboBox.Visibility = Visibility.Collapsed;
                 textBox1.Visibility = Visibility.Collapsed;
                 comboBox2.Visibility = Visibility.Collapsed;
+                this.Title = "Изменение книги";
             }
             else if(flag == "author")
             {
@@ -48,6 +49,7 @@ namespace PostgreSQL_APP
                 comboBox.Visibility = Visibility.Collapsed;
                 comboBox1.Visibility = Visibility.Collapsed;
                 comboBox2.Visibility = Visibility.Collapsed;
+                this.Title = "Изменение автора";
             }
             else if (flag == "shelf")
             {
@@ -60,6 +62,7 @@ namespace PostgreSQL_APP
                 comboBox.Visibility = Visibility.Collapsed;
                 comboBox1.Visibility = Visibility.Collapsed;
                 comboBox2.Visibility = Visibility.Collapsed;
+                this.Title = "Изменение полки";
             }
             else if (flag == "location")
             {
@@ -70,6 +73,7 @@ namespace PostgreSQL_APP
                 textBox.Visibility = Visibility.Collapsed;
                 textBox1.Visibility = Visibility.Collapsed;
                 textBox2.Visibility = Visibility.Collapsed;
+                this.Title = "Изменение расположения";
             }
             else if(flag == "pub")
             {
@@ -82,6 +86,7 @@ namespace PostgreSQL_APP
                 comboBox.Visibility = Visibility.Collapsed;
                 comboBox1.Visibility = Visibility.Collapsed;
                 comboBox2.Visibility = Visibility.Collapsed;
+                this.Title = "Изменение издательства";
             }
         }
 
@@ -90,28 +95,28 @@ namespace PostgreSQL_APP
             string str = null;
             if (flag == "book")
             {
-                str = "select public.upd_book(\'" + id + "\', \'" + textBox.Text + "\', \'" + comboBox1.Text + "\', \'" + textBox2.Text + "\', \'" + textBox3.Text + "\')";
+                str = "public.upd_book(\'" + id + "\', \'" + textBox.Text + "\', \'" + comboBox1.Text + "\', \'" + textBox2.Text + "\', \'" + textBox3.Text + "\')";
             }
             if (flag == "author")
             {
-                str = "select public.upd_author(\'" + id + "\', \'"+ textBox.Text + "\', \'" + textBox1.Text + "\', \'" + textBox2.Text + "\', \'" + textBox3.Text + "\')";
+                str = "public.upd_author(\'" + id + "\', \'"+ textBox.Text + "\', \'" + textBox1.Text + "\', \'" + textBox2.Text + "\', \'" + textBox3.Text + "\')";
             }
             if (flag == "shelf")
             {
-                str = "select public.upd_shelf(\'" + id + "\', \'" + textBox.Text + "\', \'" + textBox1.Text + "\')";
+                str = "public.upd_shelf(\'" + id + "\', \'" + textBox.Text + "\', \'" + textBox1.Text + "\')";
             }
             if (flag == "location")
             {
-                str = "select public.upd_location(" + id + ", " + id1 + ", " + id2 + ", " + id3 + ", " + textBox3.Text + ")";
+                str = "public.upd_location(" + id + ", " + id1 + ", " + id2 + ", " + id3 + ", " + textBox3.Text + ")";
             }
             if (flag == "pub")
             {
-                str = "select public.upd_pub(\'" + id + "\', \'" + textBox.Text + "\', \'" + textBox1.Text + "\')";
+                str = "public.upd_pub(\'" + id + "\', \'" + textBox.Text + "\', \'" + textBox1.Text + "\')";
             }
             return str;
         }
 
-        private void edit_but_Click(object sender, RoutedEventArgs e)
+        private void editBut_Click(object sender, RoutedEventArgs e)
         {
             ok = true;
             Close();

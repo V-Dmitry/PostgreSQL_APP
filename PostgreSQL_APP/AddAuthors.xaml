@@ -1,15 +1,15 @@
-﻿<Window x:Class="PostgreSQL_APP.Add_authors"
+﻿<Window x:Class="PostgreSQL_APP.AddAuthors"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PostgreSQL_APP"
         mc:Ignorable="d"
-        Title="Add_authors" Height="110.515" Width="369.939">
+        Title="Добавление авторов" Height="110.515" Width="369.939">
     <Grid>
         <Label x:Name="label" Content="Количество добавляемых записей:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="208" Height="27"/>
         <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="223,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="129"/>
-        <Button x:Name="add_but" Content="Добавить" HorizontalAlignment="Left" Margin="223,42,0,0" VerticalAlignment="Top" Width="129" Height="28" Click="add_but_Click"/>
+        <Button x:Name="addBut" Content="Добавить" HorizontalAlignment="Left" Margin="223,42,0,0" VerticalAlignment="Top" Width="129" Height="28" Click="addBut_Click"/>
 
     </Grid>
 </Window>

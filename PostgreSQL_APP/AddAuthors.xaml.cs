@@ -17,11 +17,11 @@ namespace PostgreSQL_APP
     /// <summary>
     /// Логика взаимодействия для Add_authors.xaml
     /// </summary>
-    public partial class Add_authors : Window
+    public partial class AddAuthors : Window
     {
         int count = 0;
         bool ok = false;
-        public Add_authors()
+        public AddAuthors()
         {
             InitializeComponent();
         }
@@ -44,7 +44,7 @@ namespace PostgreSQL_APP
             get { return ok; }
         }
 
-        private void add_but_Click(object sender, RoutedEventArgs e)
+        private void addBut_Click(object sender, RoutedEventArgs e)
         {
             ok = true;
             Count = Convert.ToInt32(textBox.Text);

@@ -32,6 +32,8 @@ namespace PostgreSQL_APP
         public string flag = null;
 
         public bool ok = false;
+        
+        public Add() { }
         public Add(string flag)
         {
             InitializeComponent();
@@ -94,30 +96,50 @@ namespace PostgreSQL_APP
             }
         }
 
-        public string Query(int id1=0, int id2=0, int id3=0)
+        public Book Book()
         {
-            string str = null;
-            if (flag == "book")
-            {
-                str = "public.insert_book(\'" + textBox1.Text + "\', \'" + comboBox2.Text + "\', \'" + textBox3.Text + "\', \'" + textBox4.Text + "\')";
-            }
-            if (flag == "author")
-            {
-                str = "public.insert_author(\'" + textBox1.Text + "\', \'" + textBox2.Text + "\', \'" + textBox3.Text + "\', \'" + textBox4.Text + "\')";
-            }
-            if (flag == "shelf")
-            {
-                str = "public.insert_shelf(\'" + textBox1.Text + "\', \'" + textBox2.Text + "\')";
-            }
-            if (flag == "location")
-            {
-                str = "public.insert_loc(" + id1 + ", " + id2 + ", " + id3 + ", " + textBox4.Text + ")";
-            }
-            if (flag == "pub")
-            {
-                str = "public.insert_pub(\'" + textBox1.Text + "\', \'" + textBox2.Text + "\')";
-            }
-            return str;
+            Book book = new Book();
+            book.BookName = textBox1.Text;
+            book.BookPublishing = comboBox2.Text;
+            book.PublishingDate = textBox3.Text;
+            book.PagesCount = Convert.ToInt32(textBox4.Text);
+            return book.GetObj;
+        }
+
+        public Author Author()
+        {
+            Author author = new Author();
+            author.AuthorFirstName = textBox1.Text;
+            author.AuthorName = textBox2.Text;
+            author.AuthorPatronymic = textBox3.Text;
+            author.AuthorCity = textBox4.Text;
+            return author.GetObj;
+        }
+
+        public BookShelf BookShelf()
+        {
+            BookShelf shelf = new BookShelf();
+            shelf.ShelfName = textBox1.Text;
+            shelf.ShelfPosition = textBox2.Text;
+            return shelf.GetObj;
+        }
+
+        public Location Location()
+        {
+            Location location = new Location();
+            location.AuthorId = Convert.ToInt32(comboBox1.SelectedValue);
+            location.BookId = Convert.ToInt32(comboBox2.SelectedValue);
+            location.ShelfId = Convert.ToInt32(comboBox3.SelectedValue);
+            location.BooksCount = Convert.ToInt32(textBox4.Text);
+            return location.GetObj;
+        }
+
+        public Publishing Publishing()
+        {
+            Publishing publishing = new Publishing();
+            publishing.PublishingName = textBox1.Text;
+            publishing.PublishingCity = textBox2.Text;
+            return publishing.GetObj;
         }
 
         private void addBut_Click(object sender, RoutedEventArgs e)

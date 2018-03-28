@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="Библиотека" Height="536" Width="781.5">
     <Grid Background="#FFA29C9C">
-        <TabControl x:Name="tabControl" HorizontalAlignment="Left" Height="505" VerticalAlignment="Top" Width="774">
-            <TabItem Header="Книги">
+        <TabControl x:Name="tabControl" HorizontalAlignment="Left" Width="774">
+            <TabItem Header="Книги" GotFocus="TabItem_GotFocus_1">
                 <Grid Background="#FFE5E5E5">
                     <DataGrid x:Name="BookTable" VerticalAlignment="Top" Height="467" IsSynchronizedWithCurrentItem="False"  HorizontalAlignment="Left" Width="556" IsReadOnly="True" ColumnWidth="*" CanUserReorderColumns="False" CanUserSortColumns="False">
                         <DataGrid.ContextMenu>
@@ -24,7 +24,7 @@
                     <Button x:Name="delBookBut" Content="Удалить книгу" HorizontalAlignment="Left" Margin="556,133,0,0" VerticalAlignment="Top" Width="202" Height="41" Click="delBookBut_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Авторы">
+            <TabItem Header="Авторы" GotFocus="TabItem_GotFocus_2">
                 <Grid Background="#FFE5E5E5">
                     <DataGrid x:Name="AuthorTable" HorizontalAlignment="Left" VerticalAlignment="Top" Height="467" Width="556" IsReadOnly="True" ColumnWidth="*" CanUserReorderColumns="False" CanUserSortColumns="False">
                         <DataGrid.ContextMenu>
@@ -41,7 +41,7 @@
                     <Button x:Name="addBut" Content="Добавить записи" HorizontalAlignment="Left" Margin="556,432,0,0" VerticalAlignment="Top" Width="202" Height="35" Click="addBut_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Полки" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="65" Margin="-1,0,0,0">
+            <TabItem Header="Полки" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="65" Margin="-1,0,0,0" GotFocus="TabItem_GotFocus_3">
                 <Grid Background="#FFE5E5E5">
                     <DataGrid x:Name="ShelfTable" HorizontalAlignment="Left" Height="467" VerticalAlignment="Top" Width="556" IsReadOnly="True" ColumnWidth="*" CanUserSortColumns="False" CanUserReorderColumns="False">
                         <DataGrid.ContextMenu>
@@ -57,7 +57,7 @@
                     <Button x:Name="delShelfBut" Content="Удалить полку" HorizontalAlignment="Left" Margin="556,133,0,0" VerticalAlignment="Top" Width="202" Height="41" Click="delShelfBut_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Расположения" HorizontalAlignment="Left" Height="20" VerticalAlignment="Bottom" Width="97" Margin="-2,0,-30,0">
+            <TabItem Header="Расположения" HorizontalAlignment="Left" Height="20" VerticalAlignment="Bottom" Width="97" Margin="-2,0,-30,0" GotFocus="TabItem_GotFocus_4">
                 <Grid Background="#FFE5E5E5">
                     <DataGrid x:Name="LocationTable" HorizontalAlignment="Left" Height="467" VerticalAlignment="Top" Width="558" IsReadOnly="True" ColumnWidth="*" CanUserSortColumns="False" CanUserReorderColumns="False">
                         <DataGrid.ContextMenu>
@@ -73,7 +73,7 @@
                     <Button x:Name="delLocBut" Content="Удалить расположение" HorizontalAlignment="Left" Margin="558,133,0,0" VerticalAlignment="Top" Width="200" Height="41" Click="delLocBut_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Издательства" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="98" Margin="-4,0,-22,0">
+            <TabItem Header="Издательства" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="98" Margin="-4,0,-22,0" GotFocus="TabItem_GotFocus_5">
                 <Grid Background="#FFE5E5E5">
                     <DataGrid x:Name="PubTable" HorizontalAlignment="Left" VerticalAlignment="Top" Height="467" Width="557" ColumnWidth="*" IsReadOnly="True" CanUserSortColumns="False" CanUserReorderColumns="False">
                         <DataGrid.ContextMenu>
@@ -87,6 +87,21 @@
                     <Button x:Name="addPubBut" Content="Добавить издательство" HorizontalAlignment="Left" Margin="557,45,0,0" VerticalAlignment="Top" Width="201" Height="44" Click="addPubBut_Click"/>
                     <Button x:Name="editPubBut" Content="Изменить издательство" HorizontalAlignment="Left" Margin="557,89,0,0" VerticalAlignment="Top" Width="201" Height="43" Click="editPubBut_Click"/>
                     <Button x:Name="delPubBut" Content="Удалить издательство" HorizontalAlignment="Left" Margin="557,132,0,0" VerticalAlignment="Top" Width="201" Height="41" Click="delPubBut_Click"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Индексы" GotFocus="TabItem_GotFocus">
+                <Grid Background="#FFDAD5D5">
+                    <DataGrid x:Name="indexGrid" HorizontalAlignment="Left" Height="467" VerticalAlignment="Top" Width="506" ColumnWidth="*" IsReadOnly="True"/>
+                    <Button x:Name="addIndBut" Content="Включить индексы" HorizontalAlignment="Left" Height="35" Margin="506,40,0,0" VerticalAlignment="Top" Width="132" Click="addIndBut_Click"/>
+                    <Button x:Name="delIndBut" Content="Отключить индексы" HorizontalAlignment="Left" Height="35" Margin="638,40,0,0" VerticalAlignment="Top" Width="130" Click="delIndBut_Click"/>
+                    <TextBox x:Name="indBox" HorizontalAlignment="Left" Height="23" Margin="610,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="53" Text="1" IsEnabled="False" TextAlignment="Center"/>
+                    <Button x:Name="predBut" Content="Назад" HorizontalAlignment="Left" Margin="511,10,0,0" VerticalAlignment="Top" Width="83" Height="23" Click="predBut_Click"/>
+                    <Button x:Name="nextBut" Content="Вперёд" HorizontalAlignment="Left" Margin="683,10,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="nextBut_Click"/>
+                    <TextBox x:Name="queryBox" HorizontalAlignment="Left" Height="164" Margin="511,80,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="247" AutomationProperties.IsRequiredForForm="True" AutomationProperties.IsRowHeader="True"/>
+                    <Button x:Name="queryBut" Content="Выполнить" HorizontalAlignment="Left" Height="41" Margin="511,249,0,0" VerticalAlignment="Top" Width="247" Click="queryBut_Click"/>
+                    <Label x:Name="label" Content="Время выполнения:" HorizontalAlignment="Left" Height="31" Margin="511,306,0,0" VerticalAlignment="Top" Width="136"/>
+                    <Label x:Name="label1" Content="Label" HorizontalAlignment="Left" Margin="511,337,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.132,-0.885"/>
+
                 </Grid>
             </TabItem>
         </TabControl>

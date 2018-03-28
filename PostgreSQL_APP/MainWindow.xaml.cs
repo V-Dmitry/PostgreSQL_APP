@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Diagnostics;
 
 namespace PostgreSQL_APP
 {
@@ -30,6 +31,7 @@ namespace PostgreSQL_APP
         DataTable shelfDt = null;
         DataTable locationDt = null;
         DataTable pubDt = null;
+        DataTable indTab = null;
 
         string connParam = null;
         #endregion
@@ -208,7 +210,7 @@ namespace PostgreSQL_APP
         {
             try
             {
-                AddShelf(); 
+                AddShelf();
             }
             catch (Exception p)
             {
@@ -318,201 +320,223 @@ namespace PostgreSQL_APP
         #endregion
 
         #region AddFunctions
-        public void AddBook()
+        private void AddBook()
         {
-            Add("book");
-        }
-
-        public void AddAuthor()
-        {
-            Add("author");
-        }
-
-        public void AddShelf()
-        {
-            Add("shelf");
-        }
-
-        public void AddLoc()
-        {
-            Add("location");
-        }
-        public void AddPub()
-        {
-            Add("pub");
-        }
-
-        public void Add(string table)
-        {
-            Add win = null;
-            string query = null;
-            if (table != "location" && table != "book")
-            {
-                win = new PostgreSQL_APP.Add(table);
-                win.ShowDialog();
-                query = win.Query();
-            }
-            else if (table == "location")
-            {
-                win = new PostgreSQL_APP.Add(table);
-                authorDt = pgsql.OutTable("get_author()");
-                win.comboBox1.ItemsSource = authorDt.DefaultView;
-                win.comboBox1.DisplayMemberPath = "name";
-                win.comboBox1.SelectedValuePath = "id";
-                bookDt = pgsql.OutTable("get_book()");
-                win.comboBox2.ItemsSource = bookDt.DefaultView;
-                win.comboBox2.DisplayMemberPath = "name";
-                win.comboBox2.SelectedValuePath = "id";
-                shelfDt = pgsql.OutTable("get_shelf()");
-                win.comboBox3.ItemsSource = shelfDt.DefaultView;
-                win.comboBox3.DisplayMemberPath = "name";
-                win.comboBox3.SelectedValuePath = "id";
-                win.ShowDialog();
-
-                if (win.ok)
-                {
-                    int id1 = (int)win.comboBox1.SelectedValue;
-                    int id2 = (int)win.comboBox2.SelectedValue; 
-                    int id3 = (int)win.comboBox3.SelectedValue; 
-                    query = win.Query(id1, id2, id3);
-                }
-            }
-            else if (table =="book")
-            {
-                win = new PostgreSQL_APP.Add(table);
-                pubDt = pgsql.OutTable("get_pub()");
-                win.comboBox2.ItemsSource = pubDt.DefaultView;
-                win.comboBox2.DisplayMemberPath = "name";
-                win.comboBox2.SelectedValuePath = "id";
-                win.ShowDialog();
-                query = win.Query();
-            }
+            Add win = new PostgreSQL_APP.Add("book");
+            pubDt = pgsql.OutTable("get_pub()");
+            win.comboBox2.ItemsSource = pubDt.DefaultView;
+            win.comboBox2.DisplayMemberPath = "name";
+            win.comboBox2.SelectedValuePath = "id";
+            win.ShowDialog();
+            Book b = win.Book();
+            pgsql.SetParamsBook(b.GetProcName, b.BookName, b.BookPublishing, b.PublishingDate, b.PagesCount);
             if (win.ok)
             {
-                pgsql.Query(query);
+                pgsql.Query();
+                MessageBox.Show("Успешно добавлено");
+            }
+        }
+
+        private void AddAuthor()
+        {
+            Add win = new PostgreSQL_APP.Add("author");
+            win.ShowDialog();
+            Author a = win.Author();
+            pgsql.SetParamsAuthor(a.GetProcName, a.AuthorFirstName, a.AuthorName, a.AuthorPatronymic, a.AuthorCity);
+            if (win.ok)
+            {
+                pgsql.Query();
+                MessageBox.Show("Успешно добавлено");
+            }
+        }
+
+        private void AddShelf()
+        {
+            Add win = new PostgreSQL_APP.Add("shelf");
+            win.ShowDialog();
+            BookShelf bs = win.BookShelf();
+            pgsql.SetParamsBookShelf(bs.GetProcName, bs.ShelfName, bs.ShelfPosition);
+            if (win.ok)
+            {
+                pgsql.Query();
+                MessageBox.Show("Успешно добавлено");
+            }
+        }
+
+        private void AddLoc()
+        {
+            Add win = new PostgreSQL_APP.Add("location");
+            authorDt = pgsql.OutTable("get_author()");
+            win.comboBox1.ItemsSource = authorDt.DefaultView;
+            win.comboBox1.DisplayMemberPath = "name";
+            win.comboBox1.SelectedValuePath = "id";
+            bookDt = pgsql.OutTable("get_book()");
+            win.comboBox2.ItemsSource = bookDt.DefaultView;
+            win.comboBox2.DisplayMemberPath = "name";
+            win.comboBox2.SelectedValuePath = "id";
+            shelfDt = pgsql.OutTable("get_shelf()");
+            win.comboBox3.ItemsSource = shelfDt.DefaultView;
+            win.comboBox3.DisplayMemberPath = "name";
+            win.comboBox3.SelectedValuePath = "id";
+            win.ShowDialog();
+            Location l = win.Location();
+            pgsql.SetParamsLocation(l.GetProcName, l.AuthorId, l.BookId, l.ShelfId, l.BooksCount);
+            if (win.ok)
+            {
+                pgsql.Query();
+                MessageBox.Show("Успешно добавлено");
+            }
+        }
+        private void AddPub()
+        {
+            Add win = new PostgreSQL_APP.Add("pub");
+            win.ShowDialog();
+            Publishing p = win.Publishing();
+            pgsql.SetParamsPublishing(p.GetProcName, p.PublishingName, p.PublishingCity);
+            if (win.ok)
+            {
+                pgsql.Query();
                 MessageBox.Show("Успешно добавлено");
             }
         }
         #endregion
 
         #region EditFunctions
-        public void EditBook()
+        private void EditBook()
         {
-            Edit(bookDt, BookTable, "book");
-        }
-
-        public void EditAuthor()
-        {
-            Edit(authorDt, AuthorTable, "author");
-        }
-
-        public void EditShelf()
-        {
-            Edit(shelfDt, ShelfTable, "shelf");
-        }
-
-        public void EditLoc()
-        {
-            Edit(locationDt, LocationTable, "location");
-        }
-
-        public void EditPub()
-        {
-            Edit(pubDt, PubTable, "pub");
-        }
-
-        private void Edit(DataTable dt, DataGrid dg, string table)
-        {
-            Edit win = new PostgreSQL_APP.Edit(table);
-            string query = null;
-            int num = dg.SelectedIndex;
+            Edit win = new PostgreSQL_APP.Edit("book");
+            int num = BookTable.SelectedIndex;
             if (num == -1) throw new Exception("Не выбрана строка для изменения!");
-            int id = (int)dt.Rows[num][0];
-
-            if (table != "location" && table != "book")
-            {
-                win.textBox.Text = (string)dt.Rows[num][1];
-                win.textBox1.Text = (string)dt.Rows[num][2];
-
-                if (table == "author")
-                {
-                    win.textBox2.Text = (string)dt.Rows[num][3];
-                    win.textBox3.Text = dt.Rows[num][4].ToString();
-                }
-                win.ShowDialog();
-                query = win.Query(id);
-            }
-            else if(table == "location")
-            {
-                authorDt = pgsql.OutTable("get_author()");
-                win.comboBox.ItemsSource = authorDt.DefaultView;
-                win.comboBox.DisplayMemberPath = "name";
-                win.comboBox.SelectedValuePath = "id";
-                bookDt = pgsql.OutTable("get_book()");
-                win.comboBox1.ItemsSource = bookDt.DefaultView;
-                win.comboBox1.DisplayMemberPath = "name";
-                win.comboBox1.SelectedValuePath = "id";
-                shelfDt = pgsql.OutTable("get_shelf()");
-                win.comboBox2.ItemsSource = shelfDt.DefaultView;
-                win.comboBox2.DisplayMemberPath = "name";
-                win.comboBox2.SelectedValuePath = "id";
-                win.comboBox.Text = dt.Rows[num][1].ToString();
-                win.comboBox1.Text = dt.Rows[num][2].ToString();
-                win.comboBox2.Text = dt.Rows[num][3].ToString();
-                win.textBox3.Text = dt.Rows[num][4].ToString();
-                win.ShowDialog();
-                if (win.ok)
-                {
-                    int id1 = (int)win.comboBox.SelectedValue;
-                    int id2 = (int)win.comboBox1.SelectedValue; ;
-                    int id3 = (int)win.comboBox2.SelectedValue; ;
-                    query = win.Query(id, id2, id1, id3);
-                }
-            }
-            else if (table == "book")
-            {
-                pubDt = pgsql.OutTable("get_pub()");
-                win.comboBox1.ItemsSource = pubDt.DefaultView;
-                win.comboBox1.DisplayMemberPath = "name";
-                win.comboBox1.SelectedValuePath = "id";
-                win.textBox.Text = (string)dt.Rows[num][1];
-                win.comboBox1.Text = (string)dt.Rows[num][2];
-                win.textBox2.Text = (string)dt.Rows[num][3];
-                win.textBox3.Text = dt.Rows[num][4].ToString();
-                win.ShowDialog();
-                query = win.Query(id);
-            }
-            
+            int id = (int)bookDt.Rows[num][0];
+            pubDt = pgsql.OutTable("get_pub()");
+            win.comboBox1.ItemsSource = pubDt.DefaultView;
+            win.comboBox1.DisplayMemberPath = "name";
+            win.comboBox1.SelectedValuePath = "id";
+            win.textBox.Text = (string)bookDt.Rows[num][1];
+            win.comboBox1.Text = (string)bookDt.Rows[num][2];
+            win.textBox2.Text = (string)bookDt.Rows[num][3];
+            win.textBox3.Text = bookDt.Rows[num][4].ToString();
+            win.ShowDialog();
+            Book b = win.Book();
+            pgsql.SetParamsBook(b.GetEditProcName, b.BookName, b.BookPublishing, b.PublishingDate, b.PagesCount, id);
             if (win.ok)
             {
-                pgsql.Query(query);
+                pgsql.Query();
+                MessageBox.Show("Успешно изменено\nОбновите таблицу");
+            }
+        }
+
+        private void EditAuthor()
+        {
+            Edit win = new PostgreSQL_APP.Edit("author");
+            int num = AuthorTable.SelectedIndex;
+            if (num == -1) throw new Exception("Не выбрана строка для изменения!");
+            int id = (int)authorDt.Rows[num][0];
+            win.textBox.Text = (string)authorDt.Rows[num][1];
+            win.textBox1.Text = (string)authorDt.Rows[num][2];
+            win.textBox2.Text = (string)authorDt.Rows[num][3];
+            win.textBox3.Text = authorDt.Rows[num][4].ToString();
+            win.ShowDialog();
+            Author a = win.Author();
+            pgsql.SetParamsAuthor(a.GetEditProcName, a.AuthorFirstName, a.AuthorName, a.AuthorPatronymic, a.AuthorCity, id);
+            if (win.ok)
+            {
+                pgsql.Query();
+                MessageBox.Show("Успешно изменено\nОбновите таблицу");
+            }
+        }
+
+        private void EditShelf()
+        {
+            Edit win = new PostgreSQL_APP.Edit("shelf");
+            int num = ShelfTable.SelectedIndex;
+            if (num == -1) throw new Exception("Не выбрана строка для изменения!");
+            int id = (int)shelfDt.Rows[num][0];
+            win.textBox.Text = (string)shelfDt.Rows[num][1];
+            win.textBox1.Text = (string)shelfDt.Rows[num][2];
+            win.ShowDialog();
+            BookShelf bs = win.BookShelf();
+            pgsql.SetParamsBookShelf(bs.GetEditProcName, bs.ShelfName, bs.ShelfName, id);
+            if (win.ok)
+            {
+                pgsql.Query();
+                MessageBox.Show("Успешно изменено\nОбновите таблицу");
+            }
+        }
+
+        private void EditLoc()
+        {
+            Edit win = new PostgreSQL_APP.Edit("location");
+            int num = LocationTable.SelectedIndex;
+            if (num == -1) throw new Exception("Не выбрана строка для изменения!");
+            int id = (int)locationDt.Rows[num][0];
+            authorDt = pgsql.OutTable("get_author()");
+            win.comboBox.ItemsSource = authorDt.DefaultView;
+            win.comboBox.DisplayMemberPath = "name";
+            win.comboBox.SelectedValuePath = "id";
+            bookDt = pgsql.OutTable("get_book()");
+            win.comboBox1.ItemsSource = bookDt.DefaultView;
+            win.comboBox1.DisplayMemberPath = "name";
+            win.comboBox1.SelectedValuePath = "id";
+            shelfDt = pgsql.OutTable("get_shelf()");
+            win.comboBox2.ItemsSource = shelfDt.DefaultView;
+            win.comboBox2.DisplayMemberPath = "name";
+            win.comboBox2.SelectedValuePath = "id";
+            win.comboBox.Text = locationDt.Rows[num][1].ToString();
+            win.comboBox1.Text = locationDt.Rows[num][2].ToString();
+            win.comboBox2.Text = locationDt.Rows[num][3].ToString();
+            win.textBox3.Text = locationDt.Rows[num][4].ToString();
+            win.ShowDialog();
+            Location l = win.Location();
+            pgsql.SetParamsLocation(l.GetEditProcName, l.AuthorId, l.BookId, l.ShelfId, l.BooksCount, id);
+            if (win.ok)
+            {
+                pgsql.Query();
+                MessageBox.Show("Успешно изменено\nОбновите таблицу");
+            }
+        }
+
+        private void EditPub()
+        {
+            Edit win = new PostgreSQL_APP.Edit("pub");
+            int num = PubTable.SelectedIndex;
+            if (num == -1) throw new Exception("Не выбрана строка для изменения!");
+            int id = (int)pubDt.Rows[num][0];
+            win.textBox.Text = (string)pubDt.Rows[num][1];
+            win.textBox1.Text = (string)pubDt.Rows[num][2];
+            win.ShowDialog();
+            Publishing p = win.Publishing();
+            pgsql.SetParamsPublishing(p.GetEditProcName, p.PublishingName, p.PublishingCity, id);
+            if (win.ok)
+            {
+                pgsql.Query();
                 MessageBox.Show("Успешно изменено\nОбновите таблицу");
             }
         }
         #endregion
 
         #region DelFunctions
-        public void DelBook()
+        private void DelBook()
         {
             Del(bookDt, BookTable, "book");
         }
 
-        public void DelAuthor()
+        private void DelAuthor()
         {
             Del(authorDt, AuthorTable, "author");
         }
 
-        public void DelShelf()
+        private void DelShelf()
         {
             Del(shelfDt, ShelfTable, "shelf");
         }
 
-        public void DelLoc()
+        private void DelLoc()
         {
             Del(locationDt, LocationTable, "loc");
         }
 
-        public void DelPub()
+        private void DelPub()
         {
             Del(pubDt, PubTable, "pub");
         }
@@ -671,6 +695,130 @@ namespace PostgreSQL_APP
             {
                 MessageBox.Show(p.Message);
             }
+        }
+        #endregion
+
+        #region Index
+
+        int ind = 0;
+        int lim = 20;
+        int offs = 0;
+        bool ok = false;
+
+        private void predBut_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ind = Convert.ToInt32(indBox.Text);
+                if (ind > 1 && offs >= 20)
+                {
+                    ind -= 1;
+                    indBox.Text = Convert.ToString(ind);
+                    offs = offs - 20;
+                    indTab = pgsql.OutTable("show_auth(" + lim + "," + offs + ")");
+                    indexGrid.ItemsSource = indTab.DefaultView;
+                    indexGrid.Columns[0].Visibility = Visibility.Collapsed;
+                }
+            }
+            catch(Exception p)
+            {
+                MessageBox.Show(p.Message);
+            }
+        }
+
+        private void nextBut_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ind = Convert.ToInt32(indBox.Text);
+                //if (ind  1)
+                    ind += 1;
+                indBox.Text = Convert.ToString(ind);
+                offs = offs + lim;
+                indTab = pgsql.OutTable("show_auth("+lim + "," + offs + ")");
+                indexGrid.ItemsSource = indTab.DefaultView;
+                indexGrid.Columns[0].Visibility = Visibility.Collapsed;
+            }
+            catch (Exception p)
+            {
+                MessageBox.Show(p.Message);
+            }
+        }
+
+        private void addIndBut_Click(object sender, RoutedEventArgs e)
+        {
+            if (!ok)
+            {
+                ok = true;
+                pgsql.Query("add_ind()");
+            }
+        }
+
+        private void delIndBut_Click(object sender, RoutedEventArgs e)
+        {
+            if (ok)
+            {
+                ok = false;
+                pgsql.Query("del_ind()");
+            }
+        }
+
+        private void TabItem_GotFocus(object sender, RoutedEventArgs e)
+        {
+            indTab = pgsql.OutTable("show_auth(" + lim + "," + offs + ")");
+            indexGrid.ItemsSource = indTab.DefaultView;
+            indexGrid.Columns[0].Visibility = Visibility.Collapsed;
+        }
+
+        private void queryBut_Click(object sender, RoutedEventArgs e)
+        {
+            Stopwatch s = new Stopwatch();
+            try
+            {
+                string query = queryBox.Text;
+                s.Start();
+                indTab = pgsql.OutTable2(query);
+                s.Stop();
+                indexGrid.ItemsSource = indTab.DefaultView;
+                indexGrid.Columns[0].Visibility = Visibility.Collapsed;
+                label1.Content = Convert.ToString(s.ElapsedMilliseconds);
+            }
+            catch(Exception p)
+            {
+                MessageBox.Show(p.Message);
+            }
+        }
+        #endregion
+
+        #region GotFocus
+        private void TabItem_GotFocus_1(object sender, RoutedEventArgs e)
+        {
+            BookTable.ItemsSource = bookDt.DefaultView;
+            BookTable.Columns[0].Visibility = Visibility.Collapsed;
+        }
+
+        private void TabItem_GotFocus_2(object sender, RoutedEventArgs e)
+        {
+            AuthorTable.ItemsSource = authorDt.DefaultView;
+            AuthorTable.Columns[0].Visibility = Visibility.Collapsed;
+        }
+
+        private void TabItem_GotFocus_3(object sender, RoutedEventArgs e)
+        {
+            ShelfTable.ItemsSource = shelfDt.DefaultView;
+            ShelfTable.Columns[0].Visibility = Visibility.Collapsed;
+        }
+
+        private void TabItem_GotFocus_4(object sender, RoutedEventArgs e)
+        {
+            LocationTable.ItemsSource = locationDt.DefaultView;
+            LocationTable.Columns[0].Visibility = Visibility.Collapsed;
+        }
+
+        private void TabItem_GotFocus_5(object sender, RoutedEventArgs e)
+        {
+            PubTable.ItemsSource = pubDt.DefaultView;
+            PubTable.Columns[0].Visibility = Visibility.Collapsed;
         }
         #endregion
     }

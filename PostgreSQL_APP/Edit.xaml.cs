@@ -90,30 +90,50 @@ namespace PostgreSQL_APP
             }
         }
 
-        public string Query(int id = 0, int id1 = 0, int id2 = 0, int id3 = 0)
+        public Book Book()
         {
-            string str = null;
-            if (flag == "book")
-            {
-                str = "public.upd_book(\'" + id + "\', \'" + textBox.Text + "\', \'" + comboBox1.Text + "\', \'" + textBox2.Text + "\', \'" + textBox3.Text + "\')";
-            }
-            if (flag == "author")
-            {
-                str = "public.upd_author(\'" + id + "\', \'"+ textBox.Text + "\', \'" + textBox1.Text + "\', \'" + textBox2.Text + "\', \'" + textBox3.Text + "\')";
-            }
-            if (flag == "shelf")
-            {
-                str = "public.upd_shelf(\'" + id + "\', \'" + textBox.Text + "\', \'" + textBox1.Text + "\')";
-            }
-            if (flag == "location")
-            {
-                str = "public.upd_location(" + id + ", " + id1 + ", " + id2 + ", " + id3 + ", " + textBox3.Text + ")";
-            }
-            if (flag == "pub")
-            {
-                str = "public.upd_pub(\'" + id + "\', \'" + textBox.Text + "\', \'" + textBox1.Text + "\')";
-            }
-            return str;
+            Book book = new Book();
+            book.BookName = textBox.Text;
+            book.BookPublishing = comboBox1.Text;
+            book.PublishingDate = textBox2.Text;
+            book.PagesCount = Convert.ToInt32(textBox3.Text);
+            return book.GetObj;
+        }
+
+        public Author Author()
+        {
+            Author author = new Author();
+            author.AuthorFirstName = textBox.Text;
+            author.AuthorName = textBox1.Text;
+            author.AuthorPatronymic = textBox2.Text;
+            author.AuthorCity = textBox3.Text;
+            return author.GetObj;
+        }
+
+        public BookShelf BookShelf()
+        {
+            BookShelf shelf = new BookShelf();
+            shelf.ShelfName = textBox.Text;
+            shelf.ShelfPosition = textBox1.Text;
+            return shelf.GetObj;
+        }
+
+        public Location Location()
+        {
+            Location location = new Location();
+            location.AuthorId = Convert.ToInt32(comboBox.SelectedValue);
+            location.BookId = Convert.ToInt32(comboBox1.SelectedValue);
+            location.ShelfId = Convert.ToInt32(comboBox2.SelectedValue);
+            location.BooksCount = Convert.ToInt32(textBox3.Text);
+            return location.GetObj;
+        }
+
+        public Publishing Publishing()
+        {
+            Publishing publishing = new Publishing();
+            publishing.PublishingName = textBox.Text;
+            publishing.PublishingCity = textBox1.Text;
+            return publishing.GetObj;
         }
 
         private void editBut_Click(object sender, RoutedEventArgs e)

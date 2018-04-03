@@ -22,6 +22,7 @@
                     <Button x:Name="addBookBut" Content="Добавить книгу" HorizontalAlignment="Left" Height="45" Margin="556,44,0,0" VerticalAlignment="Top" Width="202" Click="addBookBut_Click"/>
                     <Button x:Name="editBookBut" Content="Изменить книгу" HorizontalAlignment="Left" Margin="556,89,0,0" VerticalAlignment="Top" Width="202" Height="44" Click="editBookBut_Click"/>
                     <Button x:Name="delBookBut" Content="Удалить книгу" HorizontalAlignment="Left" Margin="556,133,0,0" VerticalAlignment="Top" Width="202" Height="41" Click="delBookBut_Click"/>
+                    <Button x:Name="toExcelBut" Content="Выгрузить в Excel" HorizontalAlignment="Left" Margin="556,174,0,0" VerticalAlignment="Top" Width="202" Height="43" Click="toExcelBut_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Авторы" GotFocus="TabItem_GotFocus_2">

@@ -33,6 +33,8 @@ namespace PostgreSQL_APP
         DataTable pubDt = null;
         DataTable indTab = null;
 
+        IExcel ex = null;
+
         string connParam = null;
         #endregion
 
@@ -40,6 +42,12 @@ namespace PostgreSQL_APP
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public MainWindow(IExcel ex)
+        {
+            InitializeComponent();
+            this.ex = ex;
         }
 
         public void Init(string connParam)
@@ -821,5 +829,28 @@ namespace PostgreSQL_APP
             PubTable.Columns[0].Visibility = Visibility.Collapsed;
         }
         #endregion
+
+        private void toExcelBut_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                WriteToFile();
+            }
+            catch(Exception p)
+            {
+                MessageBox.Show(p.Message);
+            }
+        }
+
+        public void WriteToFile()
+        {
+            ex.CreateSheet("Books", bookDt);
+            ex.CreateCells("Books");
+
+            ex.CreateSheet("Location", locationDt);
+            ex.CreateCells("Location");
+
+            ex.WriteToFile("Location_and_Books");
+        }
     }
 }

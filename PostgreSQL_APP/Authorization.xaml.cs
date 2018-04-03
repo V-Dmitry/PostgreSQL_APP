@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Unity;
 
 namespace PostgreSQL_APP
 {
@@ -29,11 +30,13 @@ namespace PostgreSQL_APP
             InitializeComponent();
         }
 
-        private void ConnectToDb()
+        private void InitMainForm()
         {
             try
             {
-                MainWindow win = new MainWindow();
+                UnityContainer container = new UnityContainer();
+                container.RegisterType<IExcel, Excel>();
+                MainWindow win = container.Resolve<MainWindow>();
                 win.Init(connParam);
                 win.Show();
                 this.Close();
@@ -51,7 +54,7 @@ namespace PostgreSQL_APP
             name = name_box.Text;
             password = pass_box.Password;
             connParam = "Server=" + server + ";Port=" + port + ";Database=Library;User Id=" + name + ";Password=" + password + ";";
-            ConnectToDb();
+            InitMainForm();
         }
     }
 }

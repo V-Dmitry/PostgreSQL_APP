@@ -27,6 +27,7 @@ namespace PostgreSQL_APP
         public PgSQL(string connectionString)
         {
             connParam = connectionString;
+            //dbConnection = new NpgsqlConnection(connParam);
         }
 
         public DataTable OutTable(string query)
@@ -34,7 +35,7 @@ namespace PostgreSQL_APP
             DataTable dt = new DataTable();
             try
             {
-                dbConnection = new NpgsqlConnection(connParam);
+                //dbConnection = new NpgsqlConnection(connParam);
                 dbConnection.Open();
                 command = new NpgsqlCommand();
                 command.Connection = dbConnection;
@@ -56,9 +57,9 @@ namespace PostgreSQL_APP
             return dt;
         }
 
-        public void SetParamsBook(string procName, string name, string publ, string pubDate, int pgCount, int id = -1)
+        public NpgsqlCommand SetParamsBook(string procName, string name, string publ, string pubDate, int pgCount, int id = -1)
         {
-            dbConnection = new NpgsqlConnection(connParam);
+            //dbConnection = new NpgsqlConnection(connParam);
             command = new NpgsqlCommand();
             command.Connection = dbConnection;
             command.CommandType = CommandType.StoredProcedure;
@@ -69,11 +70,12 @@ namespace PostgreSQL_APP
             command.Parameters.AddWithValue("@ph", NpgsqlTypes.NpgsqlDbType.Varchar, publ);
             command.Parameters.AddWithValue("@pd", NpgsqlTypes.NpgsqlDbType.Varchar, pubDate);
             command.Parameters.AddWithValue("@pc", NpgsqlTypes.NpgsqlDbType.Integer, pgCount);
+            return command;
         }
 
-        public void SetParamsLocation(string procName, int authorId, int bookId, int shelfId, int count, int id = -1)
+        public NpgsqlCommand SetParamsLocation(string procName, int authorId, int bookId, int shelfId, int count, int id = -1)
         {
-            dbConnection = new NpgsqlConnection(connParam);
+           // dbConnection = new NpgsqlConnection(connParam);
             command = new NpgsqlCommand();
             command.Connection = dbConnection;
             command.CommandType = CommandType.StoredProcedure;
@@ -84,26 +86,29 @@ namespace PostgreSQL_APP
             command.Parameters.AddWithValue("@ai", NpgsqlTypes.NpgsqlDbType.Integer, authorId);
             command.Parameters.AddWithValue("@si", NpgsqlTypes.NpgsqlDbType.Integer, shelfId);
             command.Parameters.AddWithValue("@c", NpgsqlTypes.NpgsqlDbType.Integer, count);
+            return command;
         }
 
-        public void SetParamsAuthor(string procName, string firstname, string name, string patronymic, string city, int id = -1)
+        public NpgsqlCommand SetParamsAuthor(string procName, string firstname, string name, string patronymic, string city, int id = -1)
         {
-            dbConnection = new NpgsqlConnection(connParam);
+            //dbConnection = new NpgsqlConnection(connParam);
             command = new NpgsqlCommand();
             command.Connection = dbConnection;
             command.CommandType = CommandType.StoredProcedure;
             command.CommandText = procName;
+            command.Transaction = transaction;
             if (id != -1)
                 command.Parameters.AddWithValue("@i", NpgsqlTypes.NpgsqlDbType.Integer, id);
             command.Parameters.AddWithValue("@fn", NpgsqlTypes.NpgsqlDbType.Varchar, firstname);
             command.Parameters.AddWithValue("@n", NpgsqlTypes.NpgsqlDbType.Varchar, name);
             command.Parameters.AddWithValue("@p", NpgsqlTypes.NpgsqlDbType.Varchar, patronymic);
             command.Parameters.AddWithValue("@c", NpgsqlTypes.NpgsqlDbType.Varchar, city);
+            return command;
         }
 
-        public void SetParamsBookShelf(string procName, string name, string position, int id = -1)
+        public NpgsqlCommand SetParamsBookShelf(string procName, string name, string position, int id = -1)
         {
-            dbConnection = new NpgsqlConnection(connParam);
+            //dbConnection = new NpgsqlConnection(connParam);
             command = new NpgsqlCommand();
             command.Connection = dbConnection;
             command.CommandType = CommandType.StoredProcedure;
@@ -112,10 +117,11 @@ namespace PostgreSQL_APP
                 command.Parameters.AddWithValue("@i", NpgsqlTypes.NpgsqlDbType.Integer, id);
             command.Parameters.AddWithValue("@n", NpgsqlTypes.NpgsqlDbType.Varchar, name);
             command.Parameters.AddWithValue("@p", NpgsqlTypes.NpgsqlDbType.Varchar, position);
+            return command;
         }
-        public void SetParamsPublishing(string procName, string name, string city, int id = -1)
+        public NpgsqlCommand SetParamsPublishing(string procName, string name, string city, int id = -1)
         {
-            dbConnection = new NpgsqlConnection(connParam);
+           // dbConnection = new NpgsqlConnection(connParam);
             command = new NpgsqlCommand();
             command.Connection = dbConnection;
             command.CommandType = CommandType.StoredProcedure;
@@ -124,13 +130,26 @@ namespace PostgreSQL_APP
                 command.Parameters.AddWithValue("@i", NpgsqlTypes.NpgsqlDbType.Integer, id);
             command.Parameters.AddWithValue("@n", NpgsqlTypes.NpgsqlDbType.Varchar, name);
             command.Parameters.AddWithValue("@c", NpgsqlTypes.NpgsqlDbType.Varchar, city);
+            return command;
+        }
+
+        public NpgsqlCommand SetParamsShowAuthor(string procName, int limit, int offset)
+        {
+            //dbConnection = new NpgsqlConnection(connParam);
+            command = new NpgsqlCommand();
+            command.Connection = dbConnection;
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandText = procName;
+            command.Parameters.AddWithValue("@lim", NpgsqlTypes.NpgsqlDbType.Integer, limit);
+            command.Parameters.AddWithValue("@off", NpgsqlTypes.NpgsqlDbType.Integer, offset);
+            return command;
         }
 
         public void Query(string procName)
         {
             try
             {
-                dbConnection = new NpgsqlConnection(connParam);
+                //dbConnection = new NpgsqlConnection(connParam);
                 command = new NpgsqlCommand();
                 command.Connection = dbConnection;
                 command.CommandType = CommandType.StoredProcedure;
@@ -147,6 +166,26 @@ namespace PostgreSQL_APP
             {
                 dbConnection.Close();
             }
+        }
+
+        public bool OpenConnetion()
+        {
+            //dbConnection = new NpgsqlConnection(connParam);
+            if (dbConnection != null)
+            {
+                dbConnection.Open();
+                return true;
+            }
+            else return false;
+        }
+
+        public void CloseConnection()
+        {
+            if (dbConnection != null)
+            {
+                dbConnection.Close();
+            }
+            
         }
 
         public void Query()
@@ -170,15 +209,29 @@ namespace PostgreSQL_APP
             }
         }
 
-        public DataTable OutTable2(string query)
+        public void QueryWithTransaction()
+        {
+            if (dbConnection != null & command != null)
+            {
+                try
+                {
+                    command.Transaction = transaction;
+                    command.Prepare();
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception p)
+                {
+                    throw new Exception(p.Message);
+                }
+            }
+        }
+
+        public DataTable OutTable()
         {
             DataTable dt = new DataTable();
-            NpgsqlConnection dbConnection = null;
             try
             {
-                dbConnection = new NpgsqlConnection(connParam);
                 dbConnection.Open();
-                NpgsqlCommand command = new NpgsqlCommand(query, dbConnection);
                 NpgsqlDataAdapter dbDataAdapter = new NpgsqlDataAdapter(command);
                 DataSet ds = new DataSet();
                 dbDataAdapter.Fill(ds);
@@ -197,11 +250,11 @@ namespace PostgreSQL_APP
 
         public void Connect()
         {
-            NpgsqlConnection con = null;
+            //NpgsqlConnection con = null;
             try
             {
-                con = new NpgsqlConnection(connParam);
-                con.Open();
+                dbConnection = new NpgsqlConnection(connParam);
+                dbConnection.Open();
             }
             catch(Exception p)
             {
@@ -209,8 +262,52 @@ namespace PostgreSQL_APP
             }
             finally
             {
-                con.Close();
+                dbConnection.Close();
             }
         }
+
+        #region Transaction
+        NpgsqlTransaction transaction = null;
+
+        public void StartTransaction(int id)
+        {
+            if (dbConnection != null)
+            {
+                if(OpenConnetion())
+                     transaction = dbConnection.BeginTransaction(IsolationLevel.RepeatableRead);
+                NpgsqlCommand com = new NpgsqlCommand("select * from \"Author\" where id=" + id + "for update nowait", dbConnection, transaction);
+                //com.CommandTimeout = 1;
+                try
+                {
+                    com.ExecuteNonQuery();
+                }
+                catch(Exception p)
+                {
+                    throw new Exception("Строка изменяется другим пользователем");
+                }
+            }
+            else throw new Exception("Отсутствует подключение!");
+        }
+
+        public void RollBackTransaction()
+        {
+            if(transaction != null)
+            {
+                transaction.Rollback();
+                CloseConnection();
+            }
+        }
+
+        public void CompleteTransaction()
+        {
+            if (dbConnection != null || transaction != null)
+            { 
+                transaction.Commit();
+                CloseConnection();
+               // dbConnection.BeginTransaction();
+            }
+            else throw new Exception("Отсутствует подключение!");
+        }
+        #endregion
     }
 }

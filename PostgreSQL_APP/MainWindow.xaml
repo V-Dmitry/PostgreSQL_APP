@@ -39,7 +39,13 @@
                     <Button x:Name="addAuthorBut" Content="Добавить автора" HorizontalAlignment="Left" Height="45" Margin="556,44,0,0" VerticalAlignment="Top" Width="202" Click="addAuthorBut_Click"/>
                     <Button x:Name="editAuthorBut" Content="Изменить автора" HorizontalAlignment="Left" Margin="556,89,0,0" VerticalAlignment="Top" Width="202" Height="44" Click="editAuthorBut_Click"/>
                     <Button x:Name="delAuthorBut" Content="Удалить автора" HorizontalAlignment="Left" Margin="556,133,0,0" VerticalAlignment="Top" Width="202" Height="41" Click="delAuthorBut_Click"/>
-                    <Button x:Name="addBut" Content="Добавить записи" HorizontalAlignment="Left" Margin="556,432,0,0" VerticalAlignment="Top" Width="202" Height="35" Click="addBut_Click"/>
+                    <TextBox x:Name="indBox" HorizontalAlignment="Left" Height="23" Margin="623,417,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="68" Text="1" IsEnabled="False" TextAlignment="Center"/>
+                    <Button x:Name="predBut" Content="Назад" HorizontalAlignment="Left" Margin="556,417,0,0" VerticalAlignment="Top" Width="62" Height="23" Click="predBut_Click"/>
+                    <Button x:Name="nextBut" Content="Вперёд" HorizontalAlignment="Left" Margin="696,417,0,0" VerticalAlignment="Top" Width="62" Height="23" Click="nextBut_Click"/>
+                    <Button x:Name="toPageBut" Content="Перейти" HorizontalAlignment="Left" Height="22" Margin="641,445,0,0" VerticalAlignment="Top" Width="117" Click="toPageBut_Click"/>
+                    <TextBox x:Name="pageNumBox" HorizontalAlignment="Left" Height="22" Margin="556,445,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="62"/>
+                    <Label x:Name="label" Content="Записи с " HorizontalAlignment="Left" Margin="561,386,0,0" VerticalAlignment="Top" Width="57"/>
+                    <Label x:Name="label1" Content="Label" HorizontalAlignment="Left" Margin="618,386,0,0" VerticalAlignment="Top" Width="140"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Полки" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="65" Margin="-1,0,0,0" GotFocus="TabItem_GotFocus_3">
@@ -88,21 +94,6 @@
                     <Button x:Name="addPubBut" Content="Добавить издательство" HorizontalAlignment="Left" Margin="557,45,0,0" VerticalAlignment="Top" Width="201" Height="44" Click="addPubBut_Click"/>
                     <Button x:Name="editPubBut" Content="Изменить издательство" HorizontalAlignment="Left" Margin="557,89,0,0" VerticalAlignment="Top" Width="201" Height="43" Click="editPubBut_Click"/>
                     <Button x:Name="delPubBut" Content="Удалить издательство" HorizontalAlignment="Left" Margin="557,132,0,0" VerticalAlignment="Top" Width="201" Height="41" Click="delPubBut_Click"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Индексы" GotFocus="TabItem_GotFocus">
-                <Grid Background="#FFDAD5D5">
-                    <DataGrid x:Name="indexGrid" HorizontalAlignment="Left" Height="467" VerticalAlignment="Top" Width="506" ColumnWidth="*" IsReadOnly="True"/>
-                    <Button x:Name="addIndBut" Content="Включить индексы" HorizontalAlignment="Left" Height="35" Margin="506,40,0,0" VerticalAlignment="Top" Width="132" Click="addIndBut_Click"/>
-                    <Button x:Name="delIndBut" Content="Отключить индексы" HorizontalAlignment="Left" Height="35" Margin="638,40,0,0" VerticalAlignment="Top" Width="130" Click="delIndBut_Click"/>
-                    <TextBox x:Name="indBox" HorizontalAlignment="Left" Height="23" Margin="610,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="53" Text="1" IsEnabled="False" TextAlignment="Center"/>
-                    <Button x:Name="predBut" Content="Назад" HorizontalAlignment="Left" Margin="511,10,0,0" VerticalAlignment="Top" Width="83" Height="23" Click="predBut_Click"/>
-                    <Button x:Name="nextBut" Content="Вперёд" HorizontalAlignment="Left" Margin="683,10,0,0" VerticalAlignment="Top" Width="75" Height="23" Click="nextBut_Click"/>
-                    <TextBox x:Name="queryBox" HorizontalAlignment="Left" Height="164" Margin="511,80,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="247" AutomationProperties.IsRequiredForForm="True" AutomationProperties.IsRowHeader="True"/>
-                    <Button x:Name="queryBut" Content="Выполнить" HorizontalAlignment="Left" Height="41" Margin="511,249,0,0" VerticalAlignment="Top" Width="247" Click="queryBut_Click"/>
-                    <Label x:Name="label" Content="Время выполнения:" HorizontalAlignment="Left" Height="31" Margin="511,306,0,0" VerticalAlignment="Top" Width="136"/>
-                    <Label x:Name="label1" Content="Label" HorizontalAlignment="Left" Margin="511,337,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.132,-0.885"/>
-
                 </Grid>
             </TabItem>
         </TabControl>

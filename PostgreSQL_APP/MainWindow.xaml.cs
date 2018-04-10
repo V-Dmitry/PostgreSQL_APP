@@ -38,7 +38,7 @@ namespace PostgreSQL_APP
         string connParam = null;
         #endregion
 
-        #region Initialaze
+        #region Initialize
         public MainWindow()
         {
             InitializeComponent();
@@ -336,10 +336,10 @@ namespace PostgreSQL_APP
             win.comboBox2.DisplayMemberPath = "name";
             win.comboBox2.SelectedValuePath = "id";
             win.ShowDialog();
-            Book b = win.Book();
-            pgsql.SetParamsBook(b.GetProcName, b.BookName, b.BookPublishing, b.PublishingDate, b.PagesCount);
             if (win.ok)
             {
+                Book b = win.Book();
+                pgsql.SetParamsBook(b.GetProcName, b.BookName, b.BookPublishing, b.PublishingDate, b.PagesCount);
                 pgsql.Query();
                 MessageBox.Show("Успешно добавлено");
             }
@@ -349,10 +349,10 @@ namespace PostgreSQL_APP
         {
             Add win = new PostgreSQL_APP.Add("author");
             win.ShowDialog();
-            Author a = win.Author();
-            pgsql.SetParamsAuthor(a.GetProcName, a.AuthorFirstName, a.AuthorName, a.AuthorPatronymic, a.AuthorCity);
             if (win.ok)
             {
+                Author a = win.Author();
+                pgsql.SetParamsAuthor(a.GetProcName, a.AuthorFirstName, a.AuthorName, a.AuthorPatronymic, a.AuthorCity);
                 pgsql.Query();
                 MessageBox.Show("Успешно добавлено");
             }
@@ -362,10 +362,10 @@ namespace PostgreSQL_APP
         {
             Add win = new PostgreSQL_APP.Add("shelf");
             win.ShowDialog();
-            BookShelf bs = win.BookShelf();
-            pgsql.SetParamsBookShelf(bs.GetProcName, bs.ShelfName, bs.ShelfPosition);
             if (win.ok)
             {
+                BookShelf bs = win.BookShelf();
+                pgsql.SetParamsBookShelf(bs.GetProcName, bs.ShelfName, bs.ShelfPosition);
                 pgsql.Query();
                 MessageBox.Show("Успешно добавлено");
             }
@@ -387,10 +387,10 @@ namespace PostgreSQL_APP
             win.comboBox3.DisplayMemberPath = "name";
             win.comboBox3.SelectedValuePath = "id";
             win.ShowDialog();
-            Location l = win.Location();
-            pgsql.SetParamsLocation(l.GetProcName, l.AuthorId, l.BookId, l.ShelfId, l.BooksCount);
             if (win.ok)
             {
+                Location l = win.Location();
+                pgsql.SetParamsLocation(l.GetProcName, l.AuthorId, l.BookId, l.ShelfId, l.BooksCount);
                 pgsql.Query();
                 MessageBox.Show("Успешно добавлено");
             }
@@ -399,10 +399,10 @@ namespace PostgreSQL_APP
         {
             Add win = new PostgreSQL_APP.Add("pub");
             win.ShowDialog();
-            Publishing p = win.Publishing();
-            pgsql.SetParamsPublishing(p.GetProcName, p.PublishingName, p.PublishingCity);
             if (win.ok)
             {
+                Publishing p = win.Publishing();
+                pgsql.SetParamsPublishing(p.GetProcName, p.PublishingName, p.PublishingCity);
                 pgsql.Query();
                 MessageBox.Show("Успешно добавлено");
             }
@@ -412,45 +412,65 @@ namespace PostgreSQL_APP
         #region EditFunctions
         private void EditBook()
         {
-            Edit win = new PostgreSQL_APP.Edit("book");
-            int num = BookTable.SelectedIndex;
-            if (num == -1) throw new Exception("Не выбрана строка для изменения!");
-            int id = (int)bookDt.Rows[num][0];
-            pubDt = pgsql.OutTable("get_pub()");
-            win.comboBox1.ItemsSource = pubDt.DefaultView;
-            win.comboBox1.DisplayMemberPath = "name";
-            win.comboBox1.SelectedValuePath = "id";
-            win.textBox.Text = (string)bookDt.Rows[num][1];
-            win.comboBox1.Text = (string)bookDt.Rows[num][2];
-            win.textBox2.Text = (string)bookDt.Rows[num][3];
-            win.textBox3.Text = bookDt.Rows[num][4].ToString();
-            win.ShowDialog();
-            Book b = win.Book();
-            pgsql.SetParamsBook(b.GetEditProcName, b.BookName, b.BookPublishing, b.PublishingDate, b.PagesCount, id);
-            if (win.ok)
+            //try
             {
-                pgsql.Query();
-                MessageBox.Show("Успешно изменено\nОбновите таблицу");
+               // pgsql.StartTransaction();
+                Edit win = new PostgreSQL_APP.Edit("book");
+                int num = BookTable.SelectedIndex;
+                if (num == -1) throw new Exception("Не выбрана строка для изменения!");
+                int id = (int)bookDt.Rows[num][0];
+                pubDt = pgsql.OutTable("get_pub()");
+                win.comboBox1.ItemsSource = pubDt.DefaultView;
+                win.comboBox1.DisplayMemberPath = "name";
+                win.comboBox1.SelectedValuePath = "id";
+                win.textBox.Text = (string)bookDt.Rows[num][1];
+                win.comboBox1.Text = (string)bookDt.Rows[num][2];
+                win.textBox2.Text = (string)bookDt.Rows[num][3];
+                win.textBox3.Text = bookDt.Rows[num][4].ToString();
+                win.ShowDialog();
+                if (win.ok)
+                {
+                    Book b = win.Book();
+                    pgsql.SetParamsBook(b.GetEditProcName, b.BookName, b.BookPublishing, b.PublishingDate, b.PagesCount, id);
+                    //pgsql.QueryWithTransaction();
+                    MessageBox.Show("Успешно изменено\nОбновите таблицу");
+                    //pgsql.CompleteTransaction();
+                }
             }
+            /*catch(Exception q)
+            {
+                pgsql.RollBackTransaction();
+                throw new Exception(q.Message);
+            }*/
         }
 
         private void EditAuthor()
         {
-            Edit win = new PostgreSQL_APP.Edit("author");
-            int num = AuthorTable.SelectedIndex;
-            if (num == -1) throw new Exception("Не выбрана строка для изменения!");
-            int id = (int)authorDt.Rows[num][0];
-            win.textBox.Text = (string)authorDt.Rows[num][1];
-            win.textBox1.Text = (string)authorDt.Rows[num][2];
-            win.textBox2.Text = (string)authorDt.Rows[num][3];
-            win.textBox3.Text = authorDt.Rows[num][4].ToString();
-            win.ShowDialog();
-            Author a = win.Author();
-            pgsql.SetParamsAuthor(a.GetEditProcName, a.AuthorFirstName, a.AuthorName, a.AuthorPatronymic, a.AuthorCity, id);
-            if (win.ok)
+            try
             {
-                pgsql.Query();
-                MessageBox.Show("Успешно изменено\nОбновите таблицу");
+                Edit win = new PostgreSQL_APP.Edit("author");
+                int num = AuthorTable.SelectedIndex;
+                if (num == -1) throw new Exception("Не выбрана строка для изменения!");
+                int id = (int)authorDt.Rows[num][0];
+                pgsql.StartTransaction(id);
+                win.textBox.Text = (string)authorDt.Rows[num][1];
+                win.textBox1.Text = (string)authorDt.Rows[num][2];
+                win.textBox2.Text = (string)authorDt.Rows[num][3];
+                win.textBox3.Text = authorDt.Rows[num][4].ToString();
+                win.ShowDialog();
+                if (win.ok)
+                {
+                    Author a = win.Author();
+                    pgsql.SetParamsAuthor(a.GetEditProcName, a.AuthorFirstName, a.AuthorName, a.AuthorPatronymic, a.AuthorCity, id);
+                    pgsql.QueryWithTransaction();
+                    MessageBox.Show("Успешно изменено\nОбновите таблицу");
+                }
+                pgsql.CompleteTransaction();
+            }
+            catch (Exception q)
+            {
+                pgsql.RollBackTransaction();
+                throw new Exception(q.Message);
             }
         }
 
@@ -463,10 +483,10 @@ namespace PostgreSQL_APP
             win.textBox.Text = (string)shelfDt.Rows[num][1];
             win.textBox1.Text = (string)shelfDt.Rows[num][2];
             win.ShowDialog();
-            BookShelf bs = win.BookShelf();
-            pgsql.SetParamsBookShelf(bs.GetEditProcName, bs.ShelfName, bs.ShelfName, id);
             if (win.ok)
             {
+            BookShelf bs = win.BookShelf();
+            pgsql.SetParamsBookShelf(bs.GetEditProcName, bs.ShelfName, bs.ShelfName, id);
                 pgsql.Query();
                 MessageBox.Show("Успешно изменено\nОбновите таблицу");
             }
@@ -495,10 +515,10 @@ namespace PostgreSQL_APP
             win.comboBox2.Text = locationDt.Rows[num][3].ToString();
             win.textBox3.Text = locationDt.Rows[num][4].ToString();
             win.ShowDialog();
-            Location l = win.Location();
-            pgsql.SetParamsLocation(l.GetEditProcName, l.AuthorId, l.BookId, l.ShelfId, l.BooksCount, id);
             if (win.ok)
             {
+            Location l = win.Location();
+            pgsql.SetParamsLocation(l.GetEditProcName, l.AuthorId, l.BookId, l.ShelfId, l.BooksCount, id);
                 pgsql.Query();
                 MessageBox.Show("Успешно изменено\nОбновите таблицу");
             }
@@ -513,10 +533,10 @@ namespace PostgreSQL_APP
             win.textBox.Text = (string)pubDt.Rows[num][1];
             win.textBox1.Text = (string)pubDt.Rows[num][2];
             win.ShowDialog();
-            Publishing p = win.Publishing();
-            pgsql.SetParamsPublishing(p.GetEditProcName, p.PublishingName, p.PublishingCity, id);
             if (win.ok)
             {
+            Publishing p = win.Publishing();
+            pgsql.SetParamsPublishing(p.GetEditProcName, p.PublishingName, p.PublishingCity, id);
                 pgsql.Query();
                 MessageBox.Show("Успешно изменено\nОбновите таблицу");
             }
@@ -684,32 +704,10 @@ namespace PostgreSQL_APP
         }
         #endregion
 
-        #region Auto
-        private void addBut_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                AddAuthors win = new AddAuthors();
-                AutoGeneration gen = new AutoGeneration(connParam);
-                win.ShowDialog();
-                if (win.Ok)
-                {
-                    int count = win.Count;
-                    gen.Generation(count);
-                    MessageBox.Show("Записи добавлены");
-                }
-            }
-            catch(Exception p)
-            {
-                MessageBox.Show(p.Message);
-            }
-        }
-        #endregion
-
-        #region Index
+       #region BigTable
 
         int ind = 0;
-        int lim = 20;
+        int lim = 100;
         int offs = 0;
         bool ok = false;
 
@@ -718,14 +716,16 @@ namespace PostgreSQL_APP
             try
             {
                 ind = Convert.ToInt32(indBox.Text);
-                if (ind > 1 && offs >= 20)
+                if (ind > 1 && offs >= lim)
                 {
                     ind -= 1;
                     indBox.Text = Convert.ToString(ind);
-                    offs = offs - 20;
-                    indTab = pgsql.OutTable("show_auth(" + lim + "," + offs + ")");
-                    indexGrid.ItemsSource = indTab.DefaultView;
-                    indexGrid.Columns[0].Visibility = Visibility.Collapsed;
+                    offs = offs - lim;
+                    pgsql.SetParamsShowAuthor("show_auth(@lim, @off)", lim, offs);
+                    authorDt = pgsql.OutTable();
+                    AuthorTable.ItemsSource = authorDt.DefaultView;
+                    AuthorTable.Columns[0].Visibility = Visibility.Collapsed;
+                    label1.Content = (offs + 1) + " по " + (offs + lim);
                 }
             }
             catch(Exception p)
@@ -743,9 +743,11 @@ namespace PostgreSQL_APP
                     ind += 1;
                 indBox.Text = Convert.ToString(ind);
                 offs = offs + lim;
-                indTab = pgsql.OutTable("show_auth("+lim + "," + offs + ")");
-                indexGrid.ItemsSource = indTab.DefaultView;
-                indexGrid.Columns[0].Visibility = Visibility.Collapsed;
+                pgsql.SetParamsShowAuthor("show_auth(@lim, @off)", lim, offs);
+                authorDt = pgsql.OutTable();
+                AuthorTable.ItemsSource = authorDt.DefaultView;
+                AuthorTable.Columns[0].Visibility = Visibility.Collapsed;
+                label1.Content = (offs + 1) + " по " + (offs + lim);
             }
             catch (Exception p)
             {
@@ -753,7 +755,33 @@ namespace PostgreSQL_APP
             }
         }
 
-        private void addIndBut_Click(object sender, RoutedEventArgs e)
+        private void toPageBut_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int pageNum = Convert.ToInt32(pageNumBox.Text);
+                if(pageNum >= 1)
+                {
+                    offs = (pageNum-1) * lim;
+                    pgsql.SetParamsShowAuthor("show_auth(@lim, @off)", lim, offs);
+                    authorDt = pgsql.OutTable();
+                    AuthorTable.ItemsSource = authorDt.DefaultView;
+                    AuthorTable.Columns[0].Visibility = Visibility.Collapsed;
+                    indBox.Text = Convert.ToString(pageNum);
+                    label1.Content = (offs + 1) + " по " + (offs + lim);
+                }
+                else
+                {
+                    MessageBox.Show("Ошибка перехода!");
+                }
+            }
+            catch(Exception p)
+            {
+                MessageBox.Show(p.Message);
+            }
+        }
+
+        /*private void addIndBut_Click(object sender, RoutedEventArgs e)
         {
             if (!ok)
             {
@@ -795,7 +823,7 @@ namespace PostgreSQL_APP
             {
                 MessageBox.Show(p.Message);
             }
-        }
+        }*/
         #endregion
 
         #region GotFocus
@@ -809,6 +837,7 @@ namespace PostgreSQL_APP
         {
             AuthorTable.ItemsSource = authorDt.DefaultView;
             AuthorTable.Columns[0].Visibility = Visibility.Collapsed;
+            label1.Content = (offs + 1) + " по " + (offs + lim);
         }
 
         private void TabItem_GotFocus_3(object sender, RoutedEventArgs e)
@@ -829,6 +858,8 @@ namespace PostgreSQL_APP
             PubTable.Columns[0].Visibility = Visibility.Collapsed;
         }
         #endregion
+
+        #region Excel
 
         private void toExcelBut_Click(object sender, RoutedEventArgs e)
         {
@@ -852,5 +883,6 @@ namespace PostgreSQL_APP
 
             ex.WriteToFile("Location_and_Books");
         }
+        #endregion
     }
 }

@@ -20,8 +20,6 @@ namespace PostgreSQL_APP
     /// </summary>
     public partial class Authorization : Window
     {
-        public string server = null;
-        public string port = null;
         public string name = null;
         public string password = null;
         public string connParam = null;
@@ -35,26 +33,46 @@ namespace PostgreSQL_APP
             try
             {
                 UnityContainer container = new UnityContainer();
-                container.RegisterType<IExcel, Excel>();
+                container.RegisterType<IController, Controller>();
                 MainWindow win = container.Resolve<MainWindow>();
                 win.Init(connParam);
                 win.Show();
                 this.Close();
             }
-            catch(Exception p)
+            catch (Exception p)
             {
                 MessageBox.Show(p.Message, "Error");
             }
         }
 
+        public bool CheckUser()
+        {
+                name = name_box.Text;
+                password = pass_box.Password;
+                ActiveDirectory ad = new ActiveDirectory();
+                if (ad.CheckUser(name, password)) return true;
+                else return false;
+
+            }
+
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            server = server_box.Text;
-            port = port_box.Text;
-            name = name_box.Text;
-            password = pass_box.Password;
-            connParam = "Server=" + server + ";Port=" + port + ";Database=Library;User Id=" + name + ";Password=" + password + ";";
-            InitMainForm();
+            try
+            {
+                if (CheckUser())
+                {
+                    connParam = "Server=localhost;Port=5433;Database=Library;User Id=postgres;Password=12345;";
+                    InitMainForm();
+                }
+                else
+                {
+                    MessageBox.Show("Неверный пользователь!");
+                }
+            }
+            catch (Exception q)
+            {
+                MessageBox.Show("Ошибка подключения к серверу\n" + q.Message);
+            }
         }
     }
 }

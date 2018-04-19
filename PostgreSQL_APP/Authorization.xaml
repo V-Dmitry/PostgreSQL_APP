@@ -5,17 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PostgreSQL_APP"
         mc:Ignorable="d"
-        Title="Аутентификация" Height="222" Width="309" WindowStartupLocation="CenterScreen">
+        Title="Аутентификация" Height="164.254" Width="302.584" WindowStartupLocation="CenterScreen">
     <Grid Margin="0,0,2,0" Background="#FFD8D4D4">
-        <Button x:Name="sign_in_button" Content="Войти  в систему" HorizontalAlignment="Left" Margin="133,141,0,0" VerticalAlignment="Top" Width="149" Height="33" Click="button_Click"/>
-        <TextBox x:Name="name_box" HorizontalAlignment="Left" Height="21" Margin="133,74,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="149" Text="postgres"/>
-        <TextBox x:Name="port_box" HorizontalAlignment="Left" Height="22" Margin="133,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="149" Text="5433"/>
-        <TextBox x:Name="server_box" HorizontalAlignment="Left" Height="22" Margin="133,11,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="149" Text="localhost"/>
-        <Label x:Name="label" Content="Пароль:" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" Width="66"/>
-        <Label x:Name="label_Copy" Content="Имя пользователя:" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top" Width="116"/>
-        <Label x:Name="label_Copy1" Content="Порт:" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" Width="66"/>
-        <Label x:Name="label_Copy2" Content="Сервер:" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top" Width="93"/>
-        <PasswordBox x:Name="pass_box" HorizontalAlignment="Left" Height="20" Margin="133,106,0,0" VerticalAlignment="Top" Width="149" Password="12345"/>
+        <Button x:Name="sign_in_button" Content="Войти  в систему" HorizontalAlignment="Left" Margin="134,79,0,0" VerticalAlignment="Top" Width="149" Height="33" Click="button_Click"/>
+        <TextBox x:Name="name_box" HorizontalAlignment="Left" Height="21" Margin="134,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="149"/>
+        <Label x:Name="label" Content="Пароль:" HorizontalAlignment="Left" Margin="11,38,0,0" VerticalAlignment="Top" Width="66"/>
+        <Label x:Name="label_Copy" Content="Имя пользователя:" HorizontalAlignment="Left" Margin="11,7,0,0" VerticalAlignment="Top" Width="116"/>
+        <PasswordBox x:Name="pass_box" HorizontalAlignment="Left" Height="20" Margin="134,44,0,0" VerticalAlignment="Top" Width="149"/>
 
     </Grid>
 </Window>

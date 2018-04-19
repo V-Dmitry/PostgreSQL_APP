@@ -42,10 +42,12 @@
                     <TextBox x:Name="indBox" HorizontalAlignment="Left" Height="23" Margin="623,417,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="68" Text="1" IsEnabled="False" TextAlignment="Center"/>
                     <Button x:Name="predBut" Content="Назад" HorizontalAlignment="Left" Margin="556,417,0,0" VerticalAlignment="Top" Width="62" Height="23" Click="predBut_Click"/>
                     <Button x:Name="nextBut" Content="Вперёд" HorizontalAlignment="Left" Margin="696,417,0,0" VerticalAlignment="Top" Width="62" Height="23" Click="nextBut_Click"/>
-                    <Button x:Name="toPageBut" Content="Перейти" HorizontalAlignment="Left" Height="22" Margin="641,445,0,0" VerticalAlignment="Top" Width="117" Click="toPageBut_Click"/>
-                    <TextBox x:Name="pageNumBox" HorizontalAlignment="Left" Height="22" Margin="556,445,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="62"/>
+                    <Button x:Name="toPageBut" Content="Перейти" HorizontalAlignment="Left" Height="22" Margin="641,445,0,0" VerticalAlignment="Top" Width="117" Click="toPageBut_Click" IsEnabled="False" Background="{x:Null}" BorderThickness="1" Visibility="Collapsed"/>
+                    <TextBox x:Name="pageNumBox" HorizontalAlignment="Left" Height="22" Margin="556,445,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="62" IsEnabled="False" Background="{x:Null}" BorderThickness="1" Visibility="Collapsed"/>
                     <Label x:Name="label" Content="Записи с " HorizontalAlignment="Left" Margin="561,386,0,0" VerticalAlignment="Top" Width="57"/>
                     <Label x:Name="label1" Content="Label" HorizontalAlignment="Left" Margin="618,386,0,0" VerticalAlignment="Top" Width="140"/>
+                    <Label x:Name="label2" Content="Кол-во страниц:" HorizontalAlignment="Left" Margin="561,361,0,0" VerticalAlignment="Top" Width="101" Height="25"/>
+                    <Label x:Name="countLabel" Content="Label" HorizontalAlignment="Left" Margin="667,361,0,0" VerticalAlignment="Top" Width="91"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Полки" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="65" Margin="-1,0,0,0" GotFocus="TabItem_GotFocus_3">

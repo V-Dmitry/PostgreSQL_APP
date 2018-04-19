@@ -33,7 +33,7 @@ namespace PostgreSQL_APP
         DataTable pubDt = null;
         DataTable indTab = null;
 
-        IExcel ex = null;
+        IController cont = null;
 
         string connParam = null;
         #endregion
@@ -44,10 +44,10 @@ namespace PostgreSQL_APP
             InitializeComponent();
         }
 
-        public MainWindow(IExcel ex)
+        public MainWindow(IController cont)
         {
             InitializeComponent();
-            this.ex = ex;
+            this.cont = cont;
         }
 
         public void Init(string connParam)
@@ -55,11 +55,12 @@ namespace PostgreSQL_APP
             pgsql = new PgSQL(connParam);
             pgsql.Connect();
             bookDt = pgsql.OutTable("out_book()");
-            authorDt = pgsql.OutTable("out_author()");
+            //authorDt = pgsql.OutTable("out_author()");
             shelfDt = pgsql.OutTable("out_shelf()");
             locationDt = pgsql.OutTable("out_loc()");
             pubDt = pgsql.OutTable("out_pub()");
             this.connParam = connParam;
+            countLabel.Content = Count();
         }
 
         #endregion
@@ -83,7 +84,9 @@ namespace PostgreSQL_APP
         {
             try
             {
-                authorDt = pgsql.OutTable("out_author()");
+                //authorDt = pgsql.OutTable("_author()");
+                pgsql.SetParamsShowAuthor("show_auth(@lim, @off)", lim, offs);
+                authorDt = pgsql.OutTable();
                 AuthorTable.ItemsSource = authorDt.DefaultView;
                 AuthorTable.Columns[0].Visibility = Visibility.Collapsed;
             }
@@ -412,7 +415,7 @@ namespace PostgreSQL_APP
         #region EditFunctions
         private void EditBook()
         {
-            //try
+            try
             {
                // pgsql.StartTransaction();
                 Edit win = new PostgreSQL_APP.Edit("book");
@@ -432,16 +435,16 @@ namespace PostgreSQL_APP
                 {
                     Book b = win.Book();
                     pgsql.SetParamsBook(b.GetEditProcName, b.BookName, b.BookPublishing, b.PublishingDate, b.PagesCount, id);
-                    //pgsql.QueryWithTransaction();
+                    pgsql.Query();
                     MessageBox.Show("Успешно изменено\nОбновите таблицу");
                     //pgsql.CompleteTransaction();
                 }
             }
-            /*catch(Exception q)
+            catch(Exception q)
             {
-                pgsql.RollBackTransaction();
+                //pgsql.RollBackTransaction();
                 throw new Exception(q.Message);
-            }*/
+            }
         }
 
         private void EditAuthor()
@@ -452,24 +455,27 @@ namespace PostgreSQL_APP
                 int num = AuthorTable.SelectedIndex;
                 if (num == -1) throw new Exception("Не выбрана строка для изменения!");
                 int id = (int)authorDt.Rows[num][0];
-                pgsql.StartTransaction(id);
+                //pgsql.StartTransaction(id);
                 win.textBox.Text = (string)authorDt.Rows[num][1];
                 win.textBox1.Text = (string)authorDt.Rows[num][2];
                 win.textBox2.Text = (string)authorDt.Rows[num][3];
                 win.textBox3.Text = authorDt.Rows[num][4].ToString();
+                int version = Convert.ToInt32(pgsql.GetEditRecord("select version from \"Author\" where id=" + id).Rows[0][0]);
                 win.ShowDialog();
                 if (win.ok)
                 {
                     Author a = win.Author();
+                    if (Convert.ToInt32(pgsql.GetEditRecord("select version from \"Author\" where id=" + id).Rows[0][0]) != version) throw new Exception("Запись была изменена\nПожалуйста, измените запись снова");
                     pgsql.SetParamsAuthor(a.GetEditProcName, a.AuthorFirstName, a.AuthorName, a.AuthorPatronymic, a.AuthorCity, id);
-                    pgsql.QueryWithTransaction();
+                    pgsql.Query();
+                    pgsql.EditVersionOfRecord(id);
                     MessageBox.Show("Успешно изменено\nОбновите таблицу");
                 }
-                pgsql.CompleteTransaction();
+                //pgsql.CompleteTransaction();
             }
             catch (Exception q)
             {
-                pgsql.RollBackTransaction();
+                //pgsql.RollBackTransaction();
                 throw new Exception(q.Message);
             }
         }
@@ -486,7 +492,7 @@ namespace PostgreSQL_APP
             if (win.ok)
             {
             BookShelf bs = win.BookShelf();
-            pgsql.SetParamsBookShelf(bs.GetEditProcName, bs.ShelfName, bs.ShelfName, id);
+            pgsql.SetParamsBookShelf(bs.GetEditProcName, bs.ShelfName, bs.ShelfPosition, id);
                 pgsql.Query();
                 MessageBox.Show("Успешно изменено\nОбновите таблицу");
             }
@@ -704,12 +710,21 @@ namespace PostgreSQL_APP
         }
         #endregion
 
-       #region BigTable
+        #region BigTable
 
         int ind = 0;
         int lim = 100;
         int offs = 0;
         bool ok = false;
+        DataTable tmp = new DataTable();
+
+        public int Count()
+        {
+            int count = 0;
+            tmp = pgsql.OutTable("get_author_count()");
+            count = (Convert.ToInt32(tmp.Rows[0][0]) / lim) + 2;
+            return count;
+        }
 
         private void predBut_Click(object sender, RoutedEventArgs e)
         {
@@ -725,7 +740,7 @@ namespace PostgreSQL_APP
                     authorDt = pgsql.OutTable();
                     AuthorTable.ItemsSource = authorDt.DefaultView;
                     AuthorTable.Columns[0].Visibility = Visibility.Collapsed;
-                    label1.Content = (offs + 1) + " по " + (offs + lim);
+                    label1.Content = (offs + 1) + " по " + (offs + authorDt.Rows.Count);
                 }
             }
             catch(Exception p)
@@ -742,12 +757,13 @@ namespace PostgreSQL_APP
                 //if (ind  1)
                     ind += 1;
                 indBox.Text = Convert.ToString(ind);
+                //int a = Convert.ToInt32(authorDt.Rows[lim-1][0]);
                 offs = offs + lim;
                 pgsql.SetParamsShowAuthor("show_auth(@lim, @off)", lim, offs);
                 authorDt = pgsql.OutTable();
                 AuthorTable.ItemsSource = authorDt.DefaultView;
                 AuthorTable.Columns[0].Visibility = Visibility.Collapsed;
-                label1.Content = (offs + 1) + " по " + (offs + lim);
+                label1.Content = (offs + 1) + " по " + (offs + authorDt.Rows.Count);
             }
             catch (Exception p)
             {
@@ -768,7 +784,7 @@ namespace PostgreSQL_APP
                     AuthorTable.ItemsSource = authorDt.DefaultView;
                     AuthorTable.Columns[0].Visibility = Visibility.Collapsed;
                     indBox.Text = Convert.ToString(pageNum);
-                    label1.Content = (offs + 1) + " по " + (offs + lim);
+                    label1.Content = (offs + 1) + " по " + (offs + authorDt.Rows.Count);
                 }
                 else
                 {
@@ -780,50 +796,6 @@ namespace PostgreSQL_APP
                 MessageBox.Show(p.Message);
             }
         }
-
-        /*private void addIndBut_Click(object sender, RoutedEventArgs e)
-        {
-            if (!ok)
-            {
-                ok = true;
-                pgsql.Query("add_ind()");
-            }
-        }
-
-        private void delIndBut_Click(object sender, RoutedEventArgs e)
-        {
-            if (ok)
-            {
-                ok = false;
-                pgsql.Query("del_ind()");
-            }
-        }
-
-        private void TabItem_GotFocus(object sender, RoutedEventArgs e)
-        {
-            indTab = pgsql.OutTable("show_auth(" + lim + "," + offs + ")");
-            indexGrid.ItemsSource = indTab.DefaultView;
-            indexGrid.Columns[0].Visibility = Visibility.Collapsed;
-        }
-
-        private void queryBut_Click(object sender, RoutedEventArgs e)
-        {
-            Stopwatch s = new Stopwatch();
-            try
-            {
-                string query = queryBox.Text;
-                s.Start();
-                indTab = pgsql.OutTable2(query);
-                s.Stop();
-                indexGrid.ItemsSource = indTab.DefaultView;
-                indexGrid.Columns[0].Visibility = Visibility.Collapsed;
-                label1.Content = Convert.ToString(s.ElapsedMilliseconds);
-            }
-            catch(Exception p)
-            {
-                MessageBox.Show(p.Message);
-            }
-        }*/
         #endregion
 
         #region GotFocus
@@ -835,8 +807,14 @@ namespace PostgreSQL_APP
 
         private void TabItem_GotFocus_2(object sender, RoutedEventArgs e)
         {
-            AuthorTable.ItemsSource = authorDt.DefaultView;
-            AuthorTable.Columns[0].Visibility = Visibility.Collapsed;
+            countLabel.Content = Count();
+            pgsql.SetParamsShowAuthor("show_auth(@lim, @off)", lim, offs);
+            authorDt = pgsql.OutTable();
+            if (AuthorTable.Items.Count == 0)
+            {
+                AuthorTable.ItemsSource = authorDt.DefaultView;
+                AuthorTable.Columns[0].Visibility = Visibility.Collapsed;
+            }
             label1.Content = (offs + 1) + " по " + (offs + lim);
         }
 
@@ -875,13 +853,7 @@ namespace PostgreSQL_APP
 
         public void WriteToFile()
         {
-            ex.CreateSheet("Books", bookDt);
-            ex.CreateCells("Books");
-
-            ex.CreateSheet("Location", locationDt);
-            ex.CreateCells("Location");
-
-            ex.WriteToFile("Location_and_Books");
+            cont.WriteToFile("Books", bookDt, "Books");
         }
         #endregion
     }

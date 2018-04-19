@@ -87,7 +87,7 @@ namespace PostgreSQL_APP
         {
             get
             {
-                return "public.upd_loc(@i,@ai,@bi,@si,@c)";
+                return "public.upd_location(@i,@ai,@bi,@si,@c)";
             }
         }
 

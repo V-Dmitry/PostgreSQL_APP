@@ -20,6 +20,7 @@ namespace PostgreSQL_APP
 {
     class PgSQL
     {
+        #region Initialize
         NpgsqlConnection dbConnection = null;
         NpgsqlCommand command = null;
         string connParam = null;
@@ -29,7 +30,9 @@ namespace PostgreSQL_APP
             connParam = connectionString;
             //dbConnection = new NpgsqlConnection(connParam);
         }
+        #endregion
 
+        #region GetTable
         public DataTable OutTable(string query)
         {
             DataTable dt = new DataTable();
@@ -56,6 +59,58 @@ namespace PostgreSQL_APP
             }
             return dt;
         }
+
+        public DataTable OutTable()
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                dbConnection.Open();
+                NpgsqlDataAdapter dbDataAdapter = new NpgsqlDataAdapter(command);
+                DataSet ds = new DataSet();
+                dbDataAdapter.Fill(ds);
+                dt = ds.Tables[0];
+            }
+            catch (Exception p)
+            {
+                MessageBox.Show(p.Message);
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+            return dt;
+        }
+
+        public DataTable GetEditRecord(string query)
+        {
+            DataTable dt = new DataTable();
+            try
+            {
+                //dbConnection = new NpgsqlConnection(connParam);
+                dbConnection.Open();
+                command = new NpgsqlCommand();
+                command.Connection = dbConnection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = query;
+                NpgsqlDataAdapter dbDataAdapter = new NpgsqlDataAdapter(command);
+                DataSet ds = new DataSet();
+                dbDataAdapter.Fill(ds);
+                dt = ds.Tables[0];
+            }
+            catch (Exception p)
+            {
+                throw new Exception(p.Message);
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+            return dt;
+        }
+        #endregion
+
+        #region Params
 
         public NpgsqlCommand SetParamsBook(string procName, string name, string publ, string pubDate, int pgCount, int id = -1)
         {
@@ -144,7 +199,49 @@ namespace PostgreSQL_APP
             command.Parameters.AddWithValue("@off", NpgsqlTypes.NpgsqlDbType.Integer, offset);
             return command;
         }
+        #endregion
 
+        #region Connection
+        public bool OpenConnetion()
+        {
+            //dbConnection = new NpgsqlConnection(connParam);
+            if (dbConnection != null)
+            {
+                dbConnection.Open();
+                return true;
+            }
+            else return false;
+        }
+
+        public void CloseConnection()
+        {
+            if (dbConnection != null)
+            {
+                dbConnection.Close();
+            }
+            
+        }
+
+        public void Connect()
+        {
+            //NpgsqlConnection con = null;
+            try
+            {
+                dbConnection = new NpgsqlConnection(connParam);
+                dbConnection.Open();
+            }
+            catch (Exception p)
+            {
+                throw new Exception(p.Message);
+            }
+            finally
+            {
+                dbConnection.Close();
+            }
+        }
+        #endregion
+
+        #region Query
         public void Query(string procName)
         {
             try
@@ -166,26 +263,6 @@ namespace PostgreSQL_APP
             {
                 dbConnection.Close();
             }
-        }
-
-        public bool OpenConnetion()
-        {
-            //dbConnection = new NpgsqlConnection(connParam);
-            if (dbConnection != null)
-            {
-                dbConnection.Open();
-                return true;
-            }
-            else return false;
-        }
-
-        public void CloseConnection()
-        {
-            if (dbConnection != null)
-            {
-                dbConnection.Close();
-            }
-            
         }
 
         public void Query()
@@ -226,37 +303,20 @@ namespace PostgreSQL_APP
             }
         }
 
-        public DataTable OutTable()
+        public void EditVersionOfRecord(int id)
         {
-            DataTable dt = new DataTable();
             try
             {
+                //dbConnection = new NpgsqlConnection(connParam);
+                command = new NpgsqlCommand();
+                command.Connection = dbConnection;
+                command.CommandText = "update \"Author\" set version=(select version from \"Author\" where id=@id)+1 where id=@id";
+                command.Parameters.AddWithValue("@id", NpgsqlTypes.NpgsqlDbType.Integer, id);
                 dbConnection.Open();
-                NpgsqlDataAdapter dbDataAdapter = new NpgsqlDataAdapter(command);
-                DataSet ds = new DataSet();
-                dbDataAdapter.Fill(ds);
-                dt = ds.Tables[0];
+                command.Prepare();
+                command.ExecuteNonQuery();
             }
             catch (Exception p)
-            {
-                MessageBox.Show(p.Message);
-            }
-            finally
-            {
-                dbConnection.Close();
-            }
-            return dt;
-        }
-
-        public void Connect()
-        {
-            //NpgsqlConnection con = null;
-            try
-            {
-                dbConnection = new NpgsqlConnection(connParam);
-                dbConnection.Open();
-            }
-            catch(Exception p)
             {
                 throw new Exception(p.Message);
             }
@@ -265,6 +325,7 @@ namespace PostgreSQL_APP
                 dbConnection.Close();
             }
         }
+        #endregion
 
         #region Transaction
         NpgsqlTransaction transaction = null;
@@ -281,7 +342,7 @@ namespace PostgreSQL_APP
                 {
                     com.ExecuteNonQuery();
                 }
-                catch(Exception p)
+                catch
                 {
                     throw new Exception("Строка изменяется другим пользователем");
                 }

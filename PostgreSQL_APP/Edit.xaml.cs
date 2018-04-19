@@ -107,7 +107,7 @@ namespace PostgreSQL_APP
             author.AuthorName = textBox1.Text;
             author.AuthorPatronymic = textBox2.Text;
             author.AuthorCity = textBox3.Text;
-            return author.GetObj;
+            return author;
         }
 
         public BookShelf BookShelf()

@@ -82,7 +82,7 @@ namespace PostgreSQL_APP
             return dt;
         }
 
-        public DataTable GetEditRecord(string query)
+        public DataTable GetEditRecord(string query, int id)
         {
             DataTable dt = new DataTable();
             try
@@ -93,6 +93,7 @@ namespace PostgreSQL_APP
                 command.Connection = dbConnection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = query;
+                command.Parameters.AddWithValue("@id", NpgsqlTypes.NpgsqlDbType.Integer, id);
                 NpgsqlDataAdapter dbDataAdapter = new NpgsqlDataAdapter(command);
                 DataSet ds = new DataSet();
                 dbDataAdapter.Fill(ds);

@@ -460,12 +460,12 @@ namespace PostgreSQL_APP
                 win.textBox1.Text = (string)authorDt.Rows[num][2];
                 win.textBox2.Text = (string)authorDt.Rows[num][3];
                 win.textBox3.Text = authorDt.Rows[num][4].ToString();
-                int version = Convert.ToInt32(pgsql.GetEditRecord("select version from \"Author\" where id=" + id).Rows[0][0]);
+                int version = Convert.ToInt32(pgsql.GetEditRecord("select version from \"Author\" where id=@id", id).Rows[0][0]);
                 win.ShowDialog();
                 if (win.ok)
                 {
                     Author a = win.Author();
-                    if (Convert.ToInt32(pgsql.GetEditRecord("select version from \"Author\" where id=" + id).Rows[0][0]) != version) throw new Exception("Запись была изменена\nПожалуйста, измените запись снова");
+                    if (Convert.ToInt32(pgsql.GetEditRecord("select version from \"Author\" where id=@id", id).Rows[0][0]) != version) throw new Exception("Запись была изменена\nПожалуйста, измените запись снова");
                     pgsql.SetParamsAuthor(a.GetEditProcName, a.AuthorFirstName, a.AuthorName, a.AuthorPatronymic, a.AuthorCity, id);
                     pgsql.Query();
                     pgsql.EditVersionOfRecord(id);
